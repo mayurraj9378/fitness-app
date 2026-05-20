@@ -1,11 +1,12 @@
-import Navbar from "../components/Navbar";
-import Hero from "../components/Hero";
-import Stats from "../components/Stats";
-import BMISection from "../components/BMISection";
-import WorkoutPlans from "../components/WorkoutPlans";
-import Testimonials from "../components/Testimonials";
-import Pricing from "../components/Pricing";
-import Footer from "../components/Footer";
+import Navbar from "../components/layout/Navbar";
+import Footer from "../components/layout/Footer";
+
+import Hero from "../components/sections/Hero";
+import Stats from "../components/sections/Stats";
+import BMISection from "../components/sections/BMISection";
+import WorkoutPlans from "../components/sections/WorkoutPlans";
+import Testimonials from "../components/sections/Testimonials";
+import Pricing from "../components/sections/Pricing";
 
 function Home() {
   return (
