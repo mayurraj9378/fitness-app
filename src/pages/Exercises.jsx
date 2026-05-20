@@ -1,21 +1,13 @@
 import { useState } from "react";
-
+import ExerciseCard from "../components/cards/ExerciseCard";
+import exercises from "../data/exercises";
 function Exercises() {
-  const allExercises = [
-    { name: "Push Ups", category: "Chest" },
-    { name: "Bench Press", category: "Chest" },
-    { name: "Squats", category: "Legs" },
-    { name: "Lunges", category: "Legs" },
-    { name: "Pull Ups", category: "Back" },
-    { name: "Deadlift", category: "Back" },
-    { name: "Shoulder Press", category: "Shoulders" },
-    { name: "Lateral Raises", category: "Shoulders" },
-  ];
+  
 
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("All");
 
-  const filteredExercises = allExercises.filter((exercise) => {
+  const filteredExercises = exercises.filter((exercise) => {
     const matchesSearch = exercise.name
       .toLowerCase()
       .includes(search.toLowerCase());
@@ -63,22 +55,14 @@ function Exercises() {
         <div className="grid md:grid-cols-4 gap-8">
 
           {filteredExercises.map((exercise, index) => (
-            <div
+            <ExerciseCard
               key={index}
-              className="bg-zinc-900 border border-white/10 rounded-3xl p-8 hover:border-red-500 hover:-translate-y-2 transition duration-300"
-            >
-              <h2 className="text-2xl font-bold text-red-500">
-                {exercise.name}
-              </h2>
-
-              <p className="text-gray-400 mt-3">
-                Category: {exercise.category}
-              </p>
-
-              <button className="mt-6 bg-red-500 hover:bg-red-600 px-5 py-2 rounded-lg font-semibold transition duration-300">
-                View Details
-              </button>
-            </div>
+              name={exercise.name}
+              category={exercise.category}
+              image={exercise.image}
+              calories={exercise.calories}
+              difficulty={exercise.difficulty}
+            />
           ))}
 
         </div>

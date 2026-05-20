@@ -3,8 +3,12 @@ import { FaDumbbell } from "react-icons/fa";
 import { useState } from "react";
 import { HiMenu, HiX } from "react-icons/hi";
 
+import { useTheme } from "../../context/ThemeContext";
+
 function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
+
+  const { darkMode, toggleTheme } = useTheme();
 
   return (
     <nav className="bg-black/70 backdrop-blur-lg border-b border-white/10 sticky top-0 z-50">
@@ -50,12 +54,12 @@ function Navbar() {
             Dashboard
           </Link>
 
-          <Link
-            to="/login"
-            className="hover:text-red-500 transition duration-300"
+          <button
+            onClick={toggleTheme}
+            className="border border-white px-4 py-2 rounded-lg hover:border-red-500 transition"
           >
-            Login
-          </Link>
+            {darkMode ? "Light" : "Dark"}
+          </button>
 
           <Link
             to="/register"
@@ -111,13 +115,12 @@ function Navbar() {
             Dashboard
           </Link>
 
-          <Link
-            to="/login"
-            className="hover:text-red-500"
-            onClick={() => setMenuOpen(false)}
+          <button
+            onClick={toggleTheme}
+            className="border border-white px-4 py-2 rounded-lg hover:border-red-500 transition"
           >
-            Login
-          </Link>
+            {darkMode ? "Light" : "Dark"}
+          </button>
 
           <Link
             to="/register"

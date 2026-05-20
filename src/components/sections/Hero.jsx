@@ -1,10 +1,17 @@
+import { motion } from "framer-motion";
+
 function Hero() {
   return (
-    <section className="h-[90vh] bg-black text-white flex items-center">
+    <section className="h-[90vh] bg-black text-white flex items-center overflow-hidden">
       <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-10 items-center">
 
         {/* Left Content */}
-        <div>
+        <motion.div
+          initial={{ opacity: 0, x: -80 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 1 }}
+        >
+
           <p className="text-red-500 font-semibold mb-4 tracking-widest">
             TRAIN HARDER
           </p>
@@ -19,6 +26,7 @@ function Hero() {
           </p>
 
           <div className="mt-8 flex gap-4">
+
             <button className="bg-red-500 hover:bg-red-600 px-6 py-3 rounded-lg font-semibold transition duration-300">
               Start Now
             </button>
@@ -26,17 +34,26 @@ function Hero() {
             <button className="border border-white hover:border-red-500 hover:text-red-500 px-6 py-3 rounded-lg font-semibold transition duration-300">
               Explore Plans
             </button>
+
           </div>
-        </div>
+
+        </motion.div>
 
         {/* Right Image */}
-        <div className="flex justify-center">
+        <motion.div
+          initial={{ opacity: 0, x: 80 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 1 }}
+          className="flex justify-center"
+        >
+
           <img
             src="https://images.unsplash.com/photo-1517836357463-d25dfeac3438"
             alt="Fitness"
             className="rounded-3xl shadow-2xl w-full max-w-md object-cover hover:scale-105 transition duration-500"
           />
-        </div>
+
+        </motion.div>
 
       </div>
     </section>

@@ -7,24 +7,24 @@ function Login() {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    console.log(email, password);
+    localStorage.setItem(
+      "fitness-user",
+      JSON.stringify({
+        email,
+      }),
+    );
+
+    window.location.href = "/dashboard";
   };
 
   return (
     <div className="bg-black min-h-screen flex items-center justify-center px-6">
-      
       <div className="bg-zinc-900 border border-white/10 rounded-3xl p-10 w-full max-w-md">
-        
-        <h1 className="text-4xl font-bold text-white text-center">
-          LOGIN
-        </h1>
+        <h1 className="text-4xl font-bold text-white text-center">LOGIN</h1>
 
         <form onSubmit={handleSubmit} className="mt-10">
-
           <div className="mb-6">
-            <label className="text-gray-300 block mb-2">
-              Email
-            </label>
+            <label className="text-gray-300 block mb-2">Email</label>
 
             <input
               type="email"
@@ -36,9 +36,7 @@ function Login() {
           </div>
 
           <div className="mb-6">
-            <label className="text-gray-300 block mb-2">
-              Password
-            </label>
+            <label className="text-gray-300 block mb-2">Password</label>
 
             <input
               type="password"
@@ -55,11 +53,8 @@ function Login() {
           >
             Login
           </button>
-
         </form>
-
       </div>
-
     </div>
   );
 }
