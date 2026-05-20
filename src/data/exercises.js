@@ -1,7 +1,7 @@
 const exercises = [
   {
     id: 1,
-    name: "Diamond Push Ups",
+    name: "Push Ups",
     category: "Chest",
     calories: 120,
     difficulty: "Beginner",
