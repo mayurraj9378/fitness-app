@@ -37,5 +37,22 @@ public class HelloController {
 
         return exerciseService.saveExercise(exercise);
     }
+
+    @DeleteMapping("/exercises/{id}")
+    public void deleteExercise(
+            @PathVariable Long id
+    ) {
+
+        exerciseService.deleteExercise(id);
+    }
+
+    @PutMapping("/exercises/{id}")
+    public Exercise updateExercise(
+            @PathVariable Long id,
+            @RequestBody Exercise exercise
+    ) {
+
+        return exerciseService.updateExercise(id, exercise);
+    }
 }
 
