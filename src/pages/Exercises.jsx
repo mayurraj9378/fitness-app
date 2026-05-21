@@ -11,15 +11,20 @@ function Exercises() {
     axios
       .get("http://localhost:8080/exercises")
       .then((response) => {
+
         setAllExercises(response.data);
+
       })
       .catch((error) => {
+
         console.log(error);
+
       });
 
   }, []);
 
   return (
+
     <div className="bg-black min-h-screen text-white py-20 px-6">
 
       <div className="max-w-7xl mx-auto">
@@ -30,18 +35,18 @@ function Exercises() {
 
         <div className="grid md:grid-cols-3 gap-8">
 
-          {allExercises.map((exercise, index) => (
+          {allExercises.map((exercise) => (
 
             <div
-              key={index}
+              key={exercise.id}
               className="bg-zinc-900 border border-white/10 rounded-3xl p-8"
             >
 
-              <h2 className="text-2xl font-bold text-red-500">
+              <h2 className="text-3xl font-bold text-red-500">
                 {exercise.name}
               </h2>
 
-              <p className="text-gray-400 mt-3">
+              <p className="text-gray-400 mt-4 text-lg">
                 Category: {exercise.category}
               </p>
 

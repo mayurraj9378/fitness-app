@@ -3,18 +3,25 @@ package com.fitzone.backend.controller;
 
 import com.fitzone.backend.model.Exercise;
 import com.fitzone.backend.service.ExerciseService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@CrossOrigin("*")
 public class HelloController {
 
     private final ExerciseService exerciseService;
 
-    public HelloController(ExerciseService exerciseService) {
+    public HelloController(
+            ExerciseService exerciseService
+    ) {
         this.exerciseService = exerciseService;
+    }
+
+    @GetMapping("/")
+    public String home() {
+        return "FitZone Backend Running Successfully!";
     }
 
     @GetMapping("/exercises")
@@ -22,4 +29,13 @@ public class HelloController {
 
         return exerciseService.getAllExercises();
     }
+
+    @PostMapping("/add")
+    public Exercise addExercise(
+            @RequestBody Exercise exercise
+    ) {
+
+        return exerciseService.saveExercise(exercise);
+    }
 }
+

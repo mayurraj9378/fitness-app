@@ -1,7 +1,7 @@
-
 package com.fitzone.backend.service;
 
 import com.fitzone.backend.model.Exercise;
+import com.fitzone.backend.repository.ExerciseRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -9,13 +9,23 @@ import java.util.List;
 @Service
 public class ExerciseService {
 
+    private final ExerciseRepository exerciseRepository;
+
+    public ExerciseService(
+            ExerciseRepository exerciseRepository
+    ) {
+        this.exerciseRepository = exerciseRepository;
+    }
+
     public List<Exercise> getAllExercises() {
 
-        return List.of(
-                new Exercise("Push Ups", "Chest"),
-                new Exercise("Squats", "Legs"),
-                new Exercise("Deadlift", "Back")
-        );
+        return exerciseRepository.findAll();
+    }
+
+    public Exercise saveExercise(
+            Exercise exercise
+    ) {
+
+        return exerciseRepository.save(exercise);
     }
 }
-
