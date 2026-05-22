@@ -1,3 +1,4 @@
+
 import { Routes, Route } from "react-router-dom";
 
 import Home from "./pages/Home";
@@ -13,25 +14,41 @@ import SavedWorkouts from "./pages/SavedWorkouts";
 import Profile from "./pages/Profile";
 
 function App() {
+
   return (
+
     <Routes>
 
-      <Route path="/" element={<Home />} />
+      <Route
+        path="/"
+        element={<Home />}
+      />
 
-      <Route path="/exercises" element={<Exercises />} />
+      <Route
+        path="/exercises"
+        element={<Exercises />}
+      />
 
-      <Route path="/workouts" element={<Workout />} />
+      <Route
+        path="/workouts"
+        element={<Workout />}
+      />
 
-      <Route path="/login" element={<Login />} />
+      <Route
+        path="/login"
+        element={<Login />}
+      />
 
-      <Route path="/register" element={<Register />} />
+      <Route
+        path="/register"
+        element={<Register />}
+      />
 
       <Route
         path="/exercise/:name"
         element={<ExerciseDetails />}
       />
 
-      {/* Protected Dashboard Routes */}
       <Route
         path="/dashboard"
         element={
@@ -40,7 +57,11 @@ function App() {
           </ProtectedRoute>
         }
       >
-        <Route index element={<Dashboard />} />
+
+        <Route
+          index
+          element={<Dashboard />}
+        />
 
         <Route
           path="saved"
@@ -51,6 +72,7 @@ function App() {
           path="profile"
           element={<Profile />}
         />
+
       </Route>
 
     </Routes>
@@ -58,3 +80,4 @@ function App() {
 }
 
 export default App;
+

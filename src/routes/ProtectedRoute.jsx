@@ -1,14 +1,18 @@
+
 import { Navigate } from "react-router-dom";
 
 function ProtectedRoute({ children }) {
-  const isAuthenticated =
-    localStorage.getItem("fitness-user");
 
-  return isAuthenticated ? (
-    children
-  ) : (
-    <Navigate to="/login" />
-  );
+  const token =
+    localStorage.getItem("token");
+
+  if (!token) {
+
+    return <Navigate to="/login" />;
+  }
+
+  return children;
 }
 
 export default ProtectedRoute;
+

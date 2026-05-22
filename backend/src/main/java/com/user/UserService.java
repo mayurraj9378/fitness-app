@@ -82,7 +82,9 @@ public class UserService {
             );
         }
 
-        return "Login Successful";
+        return JwtUtil.generateToken(
+                user.getEmail()
+        );
     }
 }
 

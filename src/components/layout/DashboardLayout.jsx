@@ -1,60 +1,76 @@
-import { Link, Outlet, useNavigate } from "react-router-dom";
+
+import { Outlet, Link, useNavigate } from "react-router-dom";
 
 function DashboardLayout() {
+
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    localStorage.removeItem("fitness-user");
+
+    localStorage.removeItem("token");
+
     navigate("/login");
   };
 
   return (
-    <div className="bg-black min-h-screen text-white flex">
-      {/* Sidebar */}
-      <div className="w-72 bg-zinc-950 border-r border-white/10 p-8 hidden md:block">
-        <h1 className="text-4xl font-bold mb-12">
-          Fit<span className="text-red-500">Zone</span>
+
+    <div className="min-h-screen bg-black text-white">
+
+      {/* Navbar */}
+
+      <div className="flex justify-between items-center px-10 py-6 border-b border-white/10">
+
+        <h1 className="text-3xl font-bold">
+
+          FIT<span className="text-red-500">ZONE</span>
+
         </h1>
 
-        <div className="space-y-6 text-lg">
-          <Link to="/dashboard" className="block hover:text-red-500 transition">
+        <div className="flex gap-6 items-center">
+
+          <Link
+            to="/dashboard"
+            className="hover:text-red-500"
+          >
             Dashboard
           </Link>
 
-          <Link to="/exercises" className="block hover:text-red-500 transition">
-            Exercises
-          </Link>
-
-          <Link to="/workouts" className="block hover:text-red-500 transition">
-            Workouts
-          </Link>
           <Link
             to="/dashboard/saved"
-            className="block hover:text-red-500 transition"
+            className="hover:text-red-500"
           >
-            Saved Workouts
+            Saved
           </Link>
+
           <Link
             to="/dashboard/profile"
-            className="block hover:text-red-500 transition"
+            className="hover:text-red-500"
           >
             Profile
           </Link>
+
           <button
             onClick={handleLogout}
-            className="block hover:text-red-500 transition"
+            className="bg-red-500 hover:bg-red-600 px-5 py-2 rounded-xl"
           >
             Logout
           </button>
+
         </div>
+
       </div>
 
-      {/* Main Content */}
-      <div className="flex-1 p-6 md:p-10">
+      {/* Page Content */}
+
+      <div className="p-10">
+
         <Outlet />
+
       </div>
+
     </div>
   );
 }
 
 export default DashboardLayout;
+

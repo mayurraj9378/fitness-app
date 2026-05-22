@@ -1,62 +1,114 @@
+
 import { useState } from "react";
 
+import axios from "axios";
+
+import { useNavigate } from "react-router-dom";
+
 function Login() {
+
+  const navigate = useNavigate();
+
   const [email, setEmail] = useState("");
+
   const [password, setPassword] = useState("");
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const [message, setMessage] = useState("");
 
-    localStorage.setItem(
-      "fitness-user",
-      JSON.stringify({
-        email,
-      }),
-    );
+  const handleLogin = () => {
 
-    window.location.href = "/dashboard";
+    const loginData = {
+      email,
+      password
+    };
+
+    axios
+      .post(
+        "http://localhost:8080/auth/login",
+        loginData
+      )
+
+      .then((response) => {
+
+        localStorage.setItem(
+          "token",
+          response.data
+        );
+
+        setMessage("Login Successful");
+
+        console.log(response.data);
+
+        // REDIRECT
+        navigate("/dashboard");
+
+      })
+
+      .catch((error) => {
+
+        console.log(error);
+
+        setMessage("Invalid Credentials");
+
+      });
   };
 
   return (
+
     <div className="bg-black min-h-screen flex items-center justify-center px-6">
+
       <div className="bg-zinc-900 border border-white/10 rounded-3xl p-10 w-full max-w-md">
-        <h1 className="text-4xl font-bold text-white text-center">LOGIN</h1>
 
-        <form onSubmit={handleSubmit} className="mt-10">
-          <div className="mb-6">
-            <label className="text-gray-300 block mb-2">Email</label>
+        <h1 className="text-4xl font-bold text-white text-center mb-8">
 
-            <input
-              type="email"
-              placeholder="Enter email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full bg-black border border-white/10 rounded-lg px-4 py-3 text-white outline-none focus:border-red-500"
-            />
-          </div>
+          LOGIN <span className="text-red-500">FITZONE</span>
 
-          <div className="mb-6">
-            <label className="text-gray-300 block mb-2">Password</label>
+        </h1>
 
-            <input
-              type="password"
-              placeholder="Enter password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full bg-black border border-white/10 rounded-lg px-4 py-3 text-white outline-none focus:border-red-500"
-            />
-          </div>
+        <div className="space-y-6">
+
+          <input
+            type="email"
+            placeholder="Enter Email"
+            value={email}
+            onChange={(e) =>
+              setEmail(e.target.value)
+            }
+            className="w-full bg-black border border-white/10 rounded-xl p-4 text-white"
+          />
+
+          <input
+            type="password"
+            placeholder="Enter Password"
+            value={password}
+            onChange={(e) =>
+              setPassword(e.target.value)
+            }
+            className="w-full bg-black border border-white/10 rounded-xl p-4 text-white"
+          />
 
           <button
-            type="submit"
-            className="w-full bg-red-500 hover:bg-red-600 py-3 rounded-lg text-white font-semibold transition duration-300"
+            onClick={handleLogin}
+            className="w-full bg-red-500 hover:bg-red-600 rounded-xl p-4 font-bold text-white"
           >
+
             Login
+
           </button>
-        </form>
+
+          <p className="text-center text-gray-400">
+
+            {message}
+
+          </p>
+
+        </div>
+
       </div>
+
     </div>
   );
 }
 
 export default Login;
+
