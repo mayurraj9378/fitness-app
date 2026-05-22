@@ -1,4 +1,3 @@
-
 package com.fitzone.backend.user;
 
 import jakarta.persistence.Entity;
@@ -76,3 +75,4 @@ public class User {
         this.password = password;
     }
 }
+
