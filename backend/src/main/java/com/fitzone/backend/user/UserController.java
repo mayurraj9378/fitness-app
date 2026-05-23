@@ -32,5 +32,27 @@ public class UserController {
 
         return userService.loginUser(user);
     }
+
+    @GetMapping("/me")
+    public UserDTO getCurrentUser(
+            @RequestHeader("Authorization")
+            String authHeader
+    ) {
+
+        String token =
+                authHeader.replace(
+                        "Bearer ",
+                        ""
+                );
+
+        User user =
+                userService.getCurrentUser(token);
+
+        return new UserDTO(
+                user.getId(),
+                user.getName(),
+                user.getEmail()
+        );
+    }
 }
 

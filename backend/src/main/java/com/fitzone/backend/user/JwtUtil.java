@@ -1,6 +1,7 @@
 
 package com.fitzone.backend.user;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
@@ -36,4 +37,23 @@ public class JwtUtil {
 
                 .compact();
     }
+
+    public static String extractEmail(
+            String token
+    ) {
+
+        Claims claims =
+                Jwts.parserBuilder()
+
+                        .setSigningKey(key)
+
+                        .build()
+
+                        .parseClaimsJws(token)
+
+                        .getBody();
+
+        return claims.getSubject();
+    }
 }
+

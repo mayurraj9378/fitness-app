@@ -86,5 +86,19 @@ public class UserService {
                 user.getEmail()
         );
     }
+
+    public User getCurrentUser(
+            String token
+    ) {
+
+        String email =
+                JwtUtil.extractEmail(token);
+
+        return userRepository
+                .findByEmail(email)
+                .orElseThrow(() ->
+                        new RuntimeException("User not found")
+                );
+    }
 }
 
