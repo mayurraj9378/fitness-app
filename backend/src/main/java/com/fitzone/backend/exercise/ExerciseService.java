@@ -1,8 +1,6 @@
 
-package com.fitzone.backend.service;
+package com.fitzone.backend.exercise;
 
-import com.fitzone.backend.model.Exercise;
-import com.fitzone.backend.repository.ExerciseRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,22 +13,25 @@ public class ExerciseService {
     public ExerciseService(
             ExerciseRepository exerciseRepository
     ) {
+
         this.exerciseRepository = exerciseRepository;
     }
 
-    public List<Exercise> getAllExercises() {
-
-        return exerciseRepository.findAll();
-    }
-
-    public Exercise saveExercise(
+    public Exercise addExercise(
             Exercise exercise
     ) {
 
         return exerciseRepository.save(exercise);
     }
 
-    public void deleteExercise(Long id) {
+    public List<Exercise> getExercises() {
+
+        return exerciseRepository.findAll();
+    }
+
+    public void deleteExercise(
+            Long id
+    ) {
 
         exerciseRepository.deleteById(id);
     }
@@ -41,7 +42,11 @@ public class ExerciseService {
     ) {
 
         Exercise exercise =
-                exerciseRepository.findById(id).orElseThrow();
+                exerciseRepository
+                        .findById(id)
+                        .orElseThrow(() ->
+                                new RuntimeException("Exercise not found")
+                        );
 
         exercise.setName(updatedExercise.getName());
 

@@ -1,4 +1,5 @@
-package com.fitzone.backend.model;
+
+package com.fitzone.backend.exercise;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -10,36 +11,53 @@ public class Exercise {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+
     private Long id;
 
     private String name;
+
     private String category;
 
     public Exercise() {
     }
 
-    public Exercise(String name, String category) {
+    public Exercise(
+            String name,
+            String category
+    ) {
+
         this.name = name;
+
         this.category = category;
     }
 
     public Long getId() {
+
         return id;
     }
 
+    public void setId(Long id) {
+
+        this.id = id;
+    }
+
     public String getName() {
+
         return name;
     }
 
-    public String getCategory() {
-        return category;
-    }
-
     public void setName(String name) {
+
         this.name = name;
     }
 
+    public String getCategory() {
+
+        return category;
+    }
+
     public void setCategory(String category) {
+
         this.category = category;
     }
 }
