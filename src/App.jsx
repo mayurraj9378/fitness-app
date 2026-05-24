@@ -25,16 +25,6 @@ function App() {
       />
 
       <Route
-        path="/exercises"
-        element={<Exercises />}
-      />
-
-      <Route
-        path="/workouts"
-        element={<Workout />}
-      />
-
-      <Route
         path="/login"
         element={<Login />}
       />
@@ -47,6 +37,24 @@ function App() {
       <Route
         path="/exercise/:name"
         element={<ExerciseDetails />}
+      />
+
+      <Route
+        path="/workouts"
+        element={
+          <ProtectedRoute>
+            <Workout />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/exercises"
+        element={
+          <ProtectedRoute>
+            <Exercises />
+          </ProtectedRoute>
+        }
       />
 
       <Route
@@ -80,4 +88,3 @@ function App() {
 }
 
 export default App;
-

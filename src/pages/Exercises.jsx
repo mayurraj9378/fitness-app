@@ -12,20 +12,23 @@ function Exercises() {
 
   const [editingId, setEditingId] = useState(null);
 
-  const fetchExercises = () => {
+  const fetchExercises = async () => {
 
-    axios
-      .get("http://localhost:8080/exercises")
-      .then((response) => {
+    try {
 
-        setAllExercises(response.data);
+      const response =
+        await axios.get(
+          "http://localhost:8080/exercises"
+        );
 
-      })
-      .catch((error) => {
+      setAllExercises(response.data);
 
-        console.log(error);
+    } catch (error) {
 
-      });
+      console.log(error);
+
+      alert("Backend not running");
+    }
   };
 
   useEffect(() => {
@@ -34,48 +37,57 @@ function Exercises() {
 
   }, []);
 
-  const handleAddExercise = () => {
+  const handleAddExercise = async () => {
 
-    const newExercise = {
-      name,
-      category
-    };
+    if (!name || !category) {
 
-    axios
-      .post(
-        "http://localhost:8080/add",
+      alert("Please fill all fields");
+
+      return;
+    }
+
+    try {
+
+      const newExercise = {
+        name,
+        category
+      };
+
+      await axios.post(
+        "http://localhost:8080/exercises",
         newExercise
-      )
-      .then(() => {
+      );
 
-        fetchExercises();
+      fetchExercises();
 
-        setName("");
+      setName("");
 
-        setCategory("");
+      setCategory("");
 
-      })
-      .catch((error) => {
+    } catch (error) {
 
-        console.log(error);
+      console.log(error);
 
-      });
+      alert("Failed to add exercise");
+    }
   };
 
-  const handleDeleteExercise = (id) => {
+  const handleDeleteExercise = async (id) => {
 
-    axios
-      .delete(`http://localhost:8080/exercises/${id}`)
-      .then(() => {
+    try {
 
-        fetchExercises();
+      await axios.delete(
+        `http://localhost:8080/exercises/${id}`
+      );
 
-      })
-      .catch((error) => {
+      fetchExercises();
 
-        console.log(error);
+    } catch (error) {
 
-      });
+      console.log(error);
+
+      alert("Failed to delete");
+    }
   };
 
   const handleEditClick = (exercise) => {
@@ -87,34 +99,64 @@ function Exercises() {
     setCategory(exercise.category);
   };
 
-  const handleUpdateExercise = () => {
+  const handleUpdateExercise = async () => {
 
-    const updatedExercise = {
-      name,
-      category
-    };
+    try {
 
-    axios
-      .put(
+      const updatedExercise = {
+        name,
+        category
+      };
+
+      await axios.put(
         `http://localhost:8080/exercises/${editingId}`,
         updatedExercise
-      )
-      .then(() => {
+      );
 
-        fetchExercises();
+      fetchExercises();
 
-        setName("");
+      setName("");
 
-        setCategory("");
+      setCategory("");
 
-        setEditingId(null);
+      setEditingId(null);
 
-      })
-      .catch((error) => {
+    } catch (error) {
 
-        console.log(error);
+      console.log(error);
 
-      });
+      alert("Failed to update");
+    }
+  };
+
+  const handleSaveWorkout = async (exercise) => {
+
+    try {
+
+      const token =
+        localStorage.getItem("token");
+
+      await axios.post(
+        "http://localhost:8080/workouts",
+        {
+          workoutName: exercise.name,
+          category: exercise.category,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      alert("Workout Saved!");
+
+    } catch (error) {
+
+      console.log(error);
+
+      alert("Failed to save workout");
+    }
   };
 
   return (
@@ -132,7 +174,9 @@ function Exercises() {
         <div className="bg-zinc-900 border border-white/10 rounded-3xl p-8 mb-12">
 
           <h2 className="text-3xl font-bold mb-8">
-            {editingId ? "Update Exercise" : "Add Exercise"}
+            {editingId
+              ? "Update Exercise"
+              : "Add Exercise"}
           </h2>
 
           <div className="grid md:grid-cols-3 gap-6">
@@ -141,37 +185,38 @@ function Exercises() {
               type="text"
               placeholder="Exercise Name"
               value={name}
-              onChange={(e) => setName(e.target.value)}
-              className="bg-black border border-white/10 rounded-xl p-4"
+              onChange={(e) =>
+                setName(e.target.value)
+              }
+              className="bg-black border border-white/10 rounded-xl p-4 outline-none focus:border-red-500"
             />
 
             <input
               type="text"
               placeholder="Category"
               value={category}
-              onChange={(e) => setCategory(e.target.value)}
-              className="bg-black border border-white/10 rounded-xl p-4"
+              onChange={(e) =>
+                setCategory(e.target.value)
+              }
+              className="bg-black border border-white/10 rounded-xl p-4 outline-none focus:border-red-500"
             />
 
-            {editingId ? (
-
-              <button
-                onClick={handleUpdateExercise}
-                className="bg-yellow-500 hover:bg-yellow-600 rounded-xl p-4 font-bold"
-              >
-                Update Exercise
-              </button>
-
-            ) : (
-
-              <button
-                onClick={handleAddExercise}
-                className="bg-red-500 hover:bg-red-600 rounded-xl p-4 font-bold"
-              >
-                Add Exercise
-              </button>
-
-            )}
+            <button
+              onClick={
+                editingId
+                  ? handleUpdateExercise
+                  : handleAddExercise
+              }
+              className={`rounded-xl p-4 font-bold transition duration-300 hover:scale-105 shadow-lg ${
+                editingId
+                  ? "bg-yellow-500 hover:bg-yellow-600"
+                  : "bg-red-500 hover:bg-red-600"
+              }`}
+            >
+              {editingId
+                ? "Update Exercise"
+                : "Add Exercise"}
+            </button>
 
           </div>
 
@@ -196,20 +241,33 @@ function Exercises() {
                 Category: {exercise.category}
               </p>
 
-              <div className="flex gap-4 mt-6">
+              <div className="flex gap-4 mt-6 flex-wrap">
 
                 <button
-                  onClick={() => handleEditClick(exercise)}
-                  className="bg-yellow-500 hover:bg-yellow-600 px-6 py-3 rounded-xl font-bold"
+                  onClick={() =>
+                    handleEditClick(exercise)
+                  }
+                  className="bg-yellow-500 hover:bg-yellow-600 px-6 py-3 rounded-xl font-bold transition duration-300 hover:scale-105"
                 >
                   Edit
                 </button>
 
                 <button
-                  onClick={() => handleDeleteExercise(exercise.id)}
-                  className="bg-red-500 hover:bg-red-600 px-6 py-3 rounded-xl font-bold"
+                  onClick={() =>
+                    handleDeleteExercise(exercise.id)
+                  }
+                  className="bg-red-500 hover:bg-red-600 px-6 py-3 rounded-xl font-bold transition duration-300 hover:scale-105"
                 >
                   Delete
+                </button>
+
+                <button
+                  onClick={() =>
+                    handleSaveWorkout(exercise)
+                  }
+                  className="bg-green-500 hover:bg-green-600 px-6 py-3 rounded-xl font-bold transition duration-300 hover:scale-105"
+                >
+                  Save Workout
                 </button>
 
               </div>

@@ -1,84 +1,125 @@
+
 import { useEffect, useState } from "react";
+import axios from "axios";
 
 function SavedWorkouts() {
+
   const [workouts, setWorkouts] = useState([]);
 
-  useEffect(() => {
-    const saved =
-      JSON.parse(localStorage.getItem("saved-workouts")) || [];
+  const fetchWorkouts = async () => {
 
-    setWorkouts(saved);
+    try {
+
+      const token =
+        localStorage.getItem("token");
+
+      const response =
+        await axios.get(
+          "http://localhost:8080/workouts",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+      setWorkouts(response.data);
+
+    } catch (error) {
+
+      console.log(error);
+
+      alert("Failed to load workouts");
+    }
+  };
+
+  useEffect(() => {
+
+    fetchWorkouts();
+
   }, []);
 
-  const removeWorkout = (indexToRemove) => {
-    const updatedWorkouts = workouts.filter(
-      (_, index) => index !== indexToRemove
-    );
+  const handleDeleteWorkout = async (id) => {
 
-    setWorkouts(updatedWorkouts);
+    try {
 
-    localStorage.setItem(
-      "saved-workouts",
-      JSON.stringify(updatedWorkouts)
-    );
+      const token =
+        localStorage.getItem("token");
+
+      await axios.delete(
+        `http://localhost:8080/workouts/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      fetchWorkouts();
+
+      alert("Workout Deleted!");
+
+    } catch (error) {
+
+      console.log(error);
+
+      alert("Failed to delete workout");
+    }
   };
 
   return (
+
     <div className="text-white">
 
       <h1 className="text-5xl font-bold mb-12">
+
         SAVED <span className="text-red-500">WORKOUTS</span>
+
       </h1>
 
       {workouts.length === 0 ? (
-        <p className="text-gray-400">
-          No workouts saved yet.
-        </p>
-      ) : (
-        <div className="grid md:grid-cols-3 gap-8">
 
-          {workouts.map((workout, index) => (
+        <div className="bg-zinc-900 p-8 rounded-3xl border border-white/10">
+
+          <p className="text-gray-400 text-lg">
+
+            No workouts saved yet.
+
+          </p>
+
+        </div>
+
+      ) : (
+
+        <div className="grid md:grid-cols-2 gap-6">
+
+          {workouts.map((workout) => (
+
             <div
-              key={index}
-              className="bg-zinc-900 border border-white/10 rounded-3xl overflow-hidden"
+              key={workout.id}
+              className="bg-zinc-900 border border-white/10 rounded-3xl p-8"
             >
 
-              <img
-                src={workout.image}
-                alt={workout.name}
-                className="w-full h-52 object-cover"
-              />
+              <h2 className="text-3xl font-bold text-red-500 mb-4">
 
-              <div className="p-6">
+                {workout.workoutName}
 
-                <h2 className="text-2xl font-bold text-red-500">
-                  {workout.name}
-                </h2>
+              </h2>
 
-                <p className="text-gray-400 mt-2">
-                  {workout.category}
-                </p>
+              <p className="text-gray-300 text-lg mb-6">
 
-                <div className="flex justify-between mt-4 text-sm text-gray-300">
+                Category: {workout.category}
 
-                  <span>
-                    🔥 {workout.calories} kcal
-                  </span>
+              </p>
 
-                  <span>
-                    💪 {workout.difficulty}
-                  </span>
-
-                </div>
-
-                <button
-                  onClick={() => removeWorkout(index)}
-                  className="mt-6 w-full bg-red-500 hover:bg-red-600 py-3 rounded-lg font-semibold transition duration-300"
-                >
-                  Remove Workout
-                </button>
-
-              </div>
+              <button
+                onClick={() =>
+                  handleDeleteWorkout(workout.id)
+                }
+                className="bg-red-500 hover:bg-red-600 px-6 py-3 rounded-xl font-bold transition duration-300 hover:scale-105"
+              >
+                Delete Workout
+              </button>
 
             </div>
           ))}
@@ -91,3 +132,4 @@ function SavedWorkouts() {
 }
 
 export default SavedWorkouts;
+

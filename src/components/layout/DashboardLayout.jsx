@@ -1,5 +1,9 @@
 
-import { Outlet, Link, useNavigate } from "react-router-dom";
+import {
+  Outlet,
+  Link,
+  useNavigate
+} from "react-router-dom";
 
 function DashboardLayout() {
 
@@ -8,6 +12,16 @@ function DashboardLayout() {
   const handleLogout = () => {
 
     localStorage.removeItem("token");
+
+    localStorage.removeItem("fitness-user");
+
+    localStorage.removeItem("fitness-profile");
+
+    localStorage.removeItem("saved-workouts");
+
+    localStorage.removeItem("workout-history");
+
+    alert("Logged out successfully");
 
     navigate("/login");
   };
@@ -30,28 +44,35 @@ function DashboardLayout() {
 
           <Link
             to="/dashboard"
-            className="hover:text-red-500"
+            className="hover:text-red-500 transition duration-300"
           >
             Dashboard
           </Link>
 
           <Link
             to="/dashboard/saved"
-            className="hover:text-red-500"
+            className="hover:text-red-500 transition duration-300"
           >
             Saved
           </Link>
 
           <Link
             to="/dashboard/profile"
-            className="hover:text-red-500"
+            className="hover:text-red-500 transition duration-300"
           >
             Profile
           </Link>
 
+          <Link
+            to="/exercises"
+            className="hover:text-red-500 transition duration-300"
+          >
+            Exercises
+          </Link>
+
           <button
             onClick={handleLogout}
-            className="bg-red-500 hover:bg-red-600 px-5 py-2 rounded-xl"
+            className="bg-red-500 hover:bg-red-600 px-5 py-2 rounded-xl font-bold transition duration-300 hover:scale-105"
           >
             Logout
           </button>
