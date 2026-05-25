@@ -1,49 +1,55 @@
 
-import { useParams } from "react-router-dom";
-
 import { useEffect, useState } from "react";
+
+import { useParams } from "react-router-dom";
 
 import axios from "axios";
 
 function ExerciseDetails() {
 
-  const { name } = useParams();
+  const { id } = useParams();
 
-  const [exercise, setExercise] = useState(null);
+  const [exercise, setExercise] =
+    useState(null);
+
+  const [loading, setLoading] =
+    useState(true);
+
+  const [error, setError] =
+    useState("");
 
   useEffect(() => {
 
-    const fetchExercise = async () => {
-
-      try {
-
-        const response =
-          await axios.get(
-            `https://exercisedb.p.rapidapi.com/exercises/name/${name}`,
-            {
-              headers: {
-                "X-RapidAPI-Key":
-                  import.meta.env.VITE_RAPID_API_KEY,
-
-                "X-RapidAPI-Host":
-                  "exercisedb.p.rapidapi.com",
-              },
-            }
-          );
-
-        setExercise(response.data[0]);
-
-      } catch (error) {
-
-        console.log(error);
-      }
-    };
-
     fetchExercise();
 
-  }, [name]);
+  }, []);
 
-  const saveWorkout = async () => {
+  const fetchExercise = async () => {
+
+    try {
+
+      const response =
+        await axios.get(
+          `http://localhost:8080/exercises/${id}`
+        );
+
+      console.log(response.data);
+
+      setExercise(response.data);
+
+    } catch (err) {
+
+      console.log(err);
+
+      setError("Failed to load exercise");
+
+    } finally {
+
+      setLoading(false);
+    }
+  };
+
+  const handleSaveWorkout = async () => {
 
     try {
 
@@ -51,15 +57,20 @@ function ExerciseDetails() {
         localStorage.getItem("token");
 
       await axios.post(
+
         "http://localhost:8080/workouts",
+
         {
           workoutName: exercise.name,
-          category: exercise.bodyPart,
+
+          category: exercise.category
         },
+
         {
           headers: {
-            Authorization: `Bearer ${token}`,
-          },
+            Authorization:
+              `Bearer ${token}`
+          }
         }
       );
 
@@ -73,11 +84,11 @@ function ExerciseDetails() {
     }
   };
 
-  if (!exercise) {
+  if (loading) {
 
     return (
 
-      <div className="bg-black min-h-screen flex items-center justify-center text-white text-2xl">
+      <div className="bg-black min-h-screen text-white flex items-center justify-center text-2xl">
 
         Loading...
 
@@ -85,88 +96,153 @@ function ExerciseDetails() {
     );
   }
 
+  if (error) {
+
+    return (
+
+      <div className="bg-black min-h-screen text-red-500 flex items-center justify-center text-2xl">
+
+        {error}
+
+      </div>
+    );
+  }
+
   return (
 
-    <div className="bg-black min-h-screen text-white px-6 py-16">
+    <div className="bg-black min-h-screen text-white py-20 px-6">
 
       <div className="max-w-5xl mx-auto">
 
-        <h1 className="text-5xl font-bold capitalize mb-10">
+        <div className="bg-zinc-900 rounded-3xl p-10">
 
-          {exercise.name}
+          <h1 className="text-5xl font-bold text-red-500 mb-8">
 
-        </h1>
+            {exercise.name}
 
-        <div className="grid md:grid-cols-2 gap-10">
+          </h1>
 
-          <div>
+          <div className="grid md:grid-cols-2 gap-6 mb-10">
 
-            <img
-              src={exercise.gifUrl}
-              alt={exercise.name}
-              className="rounded-3xl w-full"
-            />
+            <div className="bg-black p-6 rounded-2xl">
+
+              <h2 className="text-2xl font-bold mb-4">
+
+                Category
+
+              </h2>
+
+              <p className="text-gray-400 text-lg">
+
+                {exercise.category}
+
+              </p>
+
+            </div>
+
+            <div className="bg-black p-6 rounded-2xl">
+
+              <h2 className="text-2xl font-bold mb-4">
+
+                Difficulty
+
+              </h2>
+
+              <p className="text-gray-400 text-lg">
+
+                {exercise.difficulty}
+
+              </p>
+
+            </div>
+
+            <div className="bg-black p-6 rounded-2xl md:col-span-2">
+
+              <h2 className="text-2xl font-bold mb-4">
+
+                Sets / Reps
+
+              </h2>
+
+              <p className="text-gray-400 text-lg">
+
+                {exercise.setsReps}
+
+              </p>
+
+            </div>
 
           </div>
 
-          <div className="space-y-6">
+          <div className="bg-black p-6 rounded-2xl mb-10">
 
-            <div className="bg-zinc-900 border border-white/10 rounded-3xl p-6">
+            <h2 className="text-3xl font-bold mb-6">
 
-              <h2 className="text-2xl font-bold text-red-500 mb-3">
+              Description
 
-                Body Part
+            </h2>
 
-              </h2>
+            <p className="text-gray-400 text-lg leading-8">
 
-              <p className="text-gray-300 text-lg capitalize">
+              {exercise.description}
 
-                {exercise.bodyPart}
-
-              </p>
-
-            </div>
-
-            <div className="bg-zinc-900 border border-white/10 rounded-3xl p-6">
-
-              <h2 className="text-2xl font-bold text-red-500 mb-3">
-
-                Target Muscle
-
-              </h2>
-
-              <p className="text-gray-300 text-lg capitalize">
-
-                {exercise.target}
-
-              </p>
-
-            </div>
-
-            <div className="bg-zinc-900 border border-white/10 rounded-3xl p-6">
-
-              <h2 className="text-2xl font-bold text-red-500 mb-3">
-
-                Equipment
-
-              </h2>
-
-              <p className="text-gray-300 text-lg capitalize">
-
-                {exercise.equipment}
-
-              </p>
-
-            </div>
-
-            <button
-              onClick={saveWorkout}
-              className="bg-red-500 hover:bg-red-600 px-8 py-4 rounded-xl text-white font-semibold transition duration-300"
-            >
-              Save Workout
-            </button>
+            </p>
 
           </div>
+
+          {exercise.youtubeUrl && (
+
+            <div className="mb-10">
+
+              <h2 className="text-3xl font-bold mb-6">
+
+                Exercise Video
+
+              </h2>
+
+              <div className="overflow-hidden rounded-2xl">
+
+                <iframe
+                  width="100%"
+                  height="500"
+                  src={exercise.youtubeUrl}
+                  title="Exercise Video"
+                  allowFullScreen
+                />
+
+              </div>
+
+            </div>
+          )}
+
+          {exercise.reelUrl && (
+
+            <div className="mb-10">
+
+              <a
+                href={exercise.reelUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="bg-pink-500 hover:bg-pink-600 px-8 py-4 rounded-xl font-bold inline-block"
+              >
+
+                Watch Instagram Reel
+
+              </a>
+
+            </div>
+          )}
+
+          <button
+
+            onClick={handleSaveWorkout}
+
+            className="bg-green-500 hover:bg-green-600 px-8 py-4 rounded-xl font-bold text-lg"
+          >
+
+            Save Workout
+
+          </button>
 
         </div>
 

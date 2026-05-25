@@ -29,6 +29,27 @@ public class ExerciseService {
         return exerciseRepository.findAll();
     }
 
+    public Exercise getExerciseById(
+            Long id
+    ) {
+
+        return exerciseRepository
+                .findById(id)
+                .orElseThrow(() ->
+                        new RuntimeException(
+                                "Exercise not found"
+                        )
+                );
+    }
+
+    public List<Exercise> getExercisesByCategory(
+            String category
+    ) {
+
+        return exerciseRepository
+                .findByCategory(category);
+    }
+
     public void deleteExercise(
             Long id
     ) {
@@ -45,12 +66,42 @@ public class ExerciseService {
                 exerciseRepository
                         .findById(id)
                         .orElseThrow(() ->
-                                new RuntimeException("Exercise not found")
+                                new RuntimeException(
+                                        "Exercise not found"
+                                )
                         );
 
-        exercise.setName(updatedExercise.getName());
+        exercise.setName(
+                updatedExercise.getName()
+        );
 
-        exercise.setCategory(updatedExercise.getCategory());
+        exercise.setCategory(
+                updatedExercise.getCategory()
+        );
+
+        exercise.setDescription(
+                updatedExercise.getDescription()
+        );
+
+        exercise.setDifficulty(
+                updatedExercise.getDifficulty()
+        );
+
+        exercise.setSetsReps(
+                updatedExercise.getSetsReps()
+        );
+
+        exercise.setYoutubeUrl(
+                updatedExercise.getYoutubeUrl()
+        );
+
+        exercise.setReelUrl(
+                updatedExercise.getReelUrl()
+        );
+
+        exercise.setImageUrl(
+                updatedExercise.getImageUrl()
+        );
 
         return exerciseRepository.save(exercise);
     }

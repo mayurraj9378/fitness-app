@@ -24,13 +24,35 @@ public class ExerciseController {
             @RequestBody Exercise exercise
     ) {
 
-        return exerciseService.addExercise(exercise);
+        return exerciseService.addExercise(
+                exercise
+        );
     }
 
     @GetMapping
     public List<Exercise> getExercises() {
 
         return exerciseService.getExercises();
+    }
+
+    @GetMapping("/{id}")
+    public Exercise getExerciseById(
+            @PathVariable Long id
+    ) {
+
+        return exerciseService
+                .getExerciseById(id);
+    }
+
+    @GetMapping("/category/{category}")
+    public List<Exercise> getExercisesByCategory(
+            @PathVariable String category
+    ) {
+
+        return exerciseService
+                .getExercisesByCategory(
+                        category
+                );
     }
 
     @DeleteMapping("/{id}")
@@ -47,7 +69,11 @@ public class ExerciseController {
             @RequestBody Exercise exercise
     ) {
 
-        return exerciseService.updateExercise(id, exercise);
+        return exerciseService
+                .updateExercise(
+                        id,
+                        exercise
+                );
     }
 }
 

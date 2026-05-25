@@ -1,34 +1,71 @@
 
 import { useEffect, useState } from "react";
+
 import axios from "axios";
+
+import { Link } from "react-router-dom";
 
 function Exercises() {
 
-  const [allExercises, setAllExercises] = useState([]);
+  const [allExercises, setAllExercises] =
+    useState([]);
 
-  const [name, setName] = useState("");
+  const [filteredExercises, setFilteredExercises] =
+    useState([]);
 
-  const [category, setCategory] = useState("");
+  const [selectedCategory, setSelectedCategory] =
+    useState("All");
 
-  const [editingId, setEditingId] = useState(null);
+  const [name, setName] =
+    useState("");
 
-  const fetchExercises = async () => {
+  const [category, setCategory] =
+    useState("");
 
-    try {
+  const [description, setDescription] =
+    useState("");
 
-      const response =
-        await axios.get(
-          "http://localhost:8080/exercises"
-        );
+  const [difficulty, setDifficulty] =
+    useState("");
 
-      setAllExercises(response.data);
+  const [setsReps, setSetsReps] =
+    useState("");
 
-    } catch (error) {
+  const [youtubeUrl, setYoutubeUrl] =
+    useState("");
 
-      console.log(error);
+  const [reelUrl, setReelUrl] =
+    useState("");
 
-      alert("Backend not running");
-    }
+  const [editingId, setEditingId] =
+    useState(null);
+
+  const categories = [
+    "All",
+    "Chest",
+    "Back",
+    "Legs",
+    "Shoulders",
+    "Arms",
+    "Abs"
+  ];
+
+  const fetchExercises = () => {
+
+    axios
+      .get("http://localhost:8080/exercises")
+
+      .then((response) => {
+
+        setAllExercises(response.data);
+
+        setFilteredExercises(response.data);
+      })
+
+      .catch((error) => {
+
+        console.log(error);
+      });
   };
 
   useEffect(() => {
@@ -37,57 +74,105 @@ function Exercises() {
 
   }, []);
 
-  const handleAddExercise = async () => {
+  const filterExercises = (category) => {
 
-    if (!name || !category) {
+    setSelectedCategory(category);
 
-      alert("Please fill all fields");
+    if (category === "All") {
 
-      return;
-    }
+      setFilteredExercises(allExercises);
 
-    try {
+    } else {
 
-      const newExercise = {
-        name,
-        category
-      };
+      const filtered =
+        allExercises.filter(
+          (exercise) =>
+            exercise.category === category
+        );
 
-      await axios.post(
-        "http://localhost:8080/exercises",
-        newExercise
-      );
-
-      fetchExercises();
-
-      setName("");
-
-      setCategory("");
-
-    } catch (error) {
-
-      console.log(error);
-
-      alert("Failed to add exercise");
+      setFilteredExercises(filtered);
     }
   };
 
-  const handleDeleteExercise = async (id) => {
+  const clearForm = () => {
 
-    try {
+    setName("");
 
-      await axios.delete(
+    setCategory("");
+
+    setDescription("");
+
+    setDifficulty("");
+
+    setSetsReps("");
+
+    setYoutubeUrl("");
+
+    setReelUrl("");
+
+    setEditingId(null);
+  };
+
+  const handleAddExercise = () => {
+
+    const newExercise = {
+
+      name,
+
+      category,
+
+      description,
+
+      difficulty,
+
+      setsReps,
+
+      youtubeUrl,
+
+      reelUrl
+    };
+
+    axios
+
+      .post(
+        "http://localhost:8080/exercises",
+        newExercise
+      )
+
+      .then(() => {
+
+        fetchExercises();
+
+        clearForm();
+
+        alert("Exercise Added!");
+      })
+
+      .catch((error) => {
+
+        console.log(error);
+      });
+  };
+
+  const handleDeleteExercise = (id) => {
+
+    axios
+
+      .delete(
         `http://localhost:8080/exercises/${id}`
-      );
+      )
 
-      fetchExercises();
+      .then(() => {
 
-    } catch (error) {
+        fetchExercises();
 
-      console.log(error);
+        alert("Exercise Deleted!");
+      })
 
-      alert("Failed to delete");
-    }
+      .catch((error) => {
+
+        console.log(error);
+      });
   };
 
   const handleEditClick = (exercise) => {
@@ -97,66 +182,57 @@ function Exercises() {
     setName(exercise.name);
 
     setCategory(exercise.category);
+
+    setDescription(exercise.description);
+
+    setDifficulty(exercise.difficulty);
+
+    setSetsReps(exercise.setsReps);
+
+    setYoutubeUrl(exercise.youtubeUrl);
+
+    setReelUrl(exercise.reelUrl);
   };
 
-  const handleUpdateExercise = async () => {
+  const handleUpdateExercise = () => {
 
-    try {
+    const updatedExercise = {
 
-      const updatedExercise = {
-        name,
-        category
-      };
+      name,
 
-      await axios.put(
+      category,
+
+      description,
+
+      difficulty,
+
+      setsReps,
+
+      youtubeUrl,
+
+      reelUrl
+    };
+
+    axios
+
+      .put(
         `http://localhost:8080/exercises/${editingId}`,
         updatedExercise
-      );
+      )
 
-      fetchExercises();
+      .then(() => {
 
-      setName("");
+        fetchExercises();
 
-      setCategory("");
+        clearForm();
 
-      setEditingId(null);
+        alert("Exercise Updated!");
+      })
 
-    } catch (error) {
+      .catch((error) => {
 
-      console.log(error);
-
-      alert("Failed to update");
-    }
-  };
-
-  const handleSaveWorkout = async (exercise) => {
-
-    try {
-
-      const token =
-        localStorage.getItem("token");
-
-      await axios.post(
-        "http://localhost:8080/workouts",
-        {
-          workoutName: exercise.name,
-          category: exercise.category,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      alert("Workout Saved!");
-
-    } catch (error) {
-
-      console.log(error);
-
-      alert("Failed to save workout");
-    }
+        console.log(error);
+      });
   };
 
   return (
@@ -166,20 +242,52 @@ function Exercises() {
       <div className="max-w-7xl mx-auto">
 
         <h1 className="text-5xl font-bold text-center mb-12">
-          EXERCISE <span className="text-red-500">LIBRARY</span>
+
+          EXERCISE
+          <span className="text-red-500">
+            {" "}LIBRARY
+          </span>
+
         </h1>
+
+        {/* CATEGORY FILTERS */}
+
+        <div className="flex flex-wrap gap-4 justify-center mb-10">
+
+          {categories.map((cat) => (
+
+            <button
+              key={cat}
+
+              onClick={() =>
+                filterExercises(cat)
+              }
+
+              className={`px-6 py-3 rounded-xl font-bold transition-all duration-300 ${
+                selectedCategory === cat
+                  ? "bg-red-500"
+                  : "bg-zinc-800 hover:bg-zinc-700"
+              }`}
+            >
+              {cat}
+            </button>
+          ))}
+
+        </div>
 
         {/* FORM */}
 
-        <div className="bg-zinc-900 border border-white/10 rounded-3xl p-8 mb-12">
+        <div className="bg-zinc-900 rounded-3xl p-8 mb-12">
 
           <h2 className="text-3xl font-bold mb-8">
+
             {editingId
               ? "Update Exercise"
               : "Add Exercise"}
+
           </h2>
 
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid md:grid-cols-2 gap-6">
 
             <input
               type="text"
@@ -188,7 +296,7 @@ function Exercises() {
               onChange={(e) =>
                 setName(e.target.value)
               }
-              className="bg-black border border-white/10 rounded-xl p-4 outline-none focus:border-red-500"
+              className="bg-black p-4 rounded-xl"
             />
 
             <input
@@ -198,56 +306,138 @@ function Exercises() {
               onChange={(e) =>
                 setCategory(e.target.value)
               }
-              className="bg-black border border-white/10 rounded-xl p-4 outline-none focus:border-red-500"
+              className="bg-black p-4 rounded-xl"
             />
 
-            <button
-              onClick={
-                editingId
-                  ? handleUpdateExercise
-                  : handleAddExercise
+            <textarea
+              placeholder="Description"
+              value={description}
+              onChange={(e) =>
+                setDescription(e.target.value)
               }
-              className={`rounded-xl p-4 font-bold transition duration-300 hover:scale-105 shadow-lg ${
-                editingId
-                  ? "bg-yellow-500 hover:bg-yellow-600"
-                  : "bg-red-500 hover:bg-red-600"
-              }`}
-            >
-              {editingId
-                ? "Update Exercise"
-                : "Add Exercise"}
-            </button>
+              className="bg-black p-4 rounded-xl md:col-span-2"
+            />
+
+            <input
+              type="text"
+              placeholder="Difficulty"
+              value={difficulty}
+              onChange={(e) =>
+                setDifficulty(e.target.value)
+              }
+              className="bg-black p-4 rounded-xl"
+            />
+
+            <input
+              type="text"
+              placeholder="Sets/Reps"
+              value={setsReps}
+              onChange={(e) =>
+                setSetsReps(e.target.value)
+              }
+              className="bg-black p-4 rounded-xl"
+            />
+
+            <input
+              type="text"
+              placeholder="YouTube URL"
+              value={youtubeUrl}
+              onChange={(e) =>
+                setYoutubeUrl(e.target.value)
+              }
+              className="bg-black p-4 rounded-xl"
+            />
+
+            <input
+              type="text"
+              placeholder="Instagram Reel URL"
+              value={reelUrl}
+              onChange={(e) =>
+                setReelUrl(e.target.value)
+              }
+              className="bg-black p-4 rounded-xl"
+            />
 
           </div>
 
+          <button
+
+            onClick={
+              editingId
+                ? handleUpdateExercise
+                : handleAddExercise
+            }
+
+            className={`mt-8 px-8 py-4 rounded-xl font-bold transition-all duration-300 ${
+              editingId
+                ? "bg-yellow-500 hover:bg-yellow-600"
+                : "bg-red-500 hover:bg-red-600"
+            }`}
+          >
+
+            {editingId
+              ? "Update Exercise"
+              : "Add Exercise"}
+
+          </button>
+
         </div>
 
-        {/* EXERCISE LIST */}
+        {/* EXERCISE CARDS */}
 
         <div className="grid md:grid-cols-3 gap-8">
 
-          {allExercises.map((exercise) => (
+          {filteredExercises.map((exercise) => (
 
             <div
               key={exercise.id}
-              className="bg-zinc-900 border border-white/10 rounded-3xl p-8"
+              className="bg-zinc-900 rounded-3xl p-8"
             >
 
-              <h2 className="text-3xl font-bold text-red-500">
+              <h2 className="text-3xl font-bold text-red-500 mb-4">
+
                 {exercise.name}
+
               </h2>
 
-              <p className="text-gray-400 mt-4 text-lg">
-                Category: {exercise.category}
+              <p className="text-gray-400 mb-3">
+
+                Category:
+                {" "}
+                {exercise.category}
+
               </p>
 
-              <div className="flex gap-4 mt-6 flex-wrap">
+              <p className="text-gray-400 mb-3">
+
+                Difficulty:
+                {" "}
+                {exercise.difficulty}
+
+              </p>
+
+              <p className="text-gray-400 mb-6">
+
+                Sets/Reps:
+                {" "}
+                {exercise.setsReps}
+
+              </p>
+
+              <div className="flex flex-wrap gap-3">
+
+                <Link
+                  to={`/exercise/${exercise.id}`}
+                  className="bg-blue-500 hover:bg-blue-600 px-5 py-3 rounded-xl font-bold"
+                >
+                  Details
+                </Link>
 
                 <button
                   onClick={() =>
                     handleEditClick(exercise)
                   }
-                  className="bg-yellow-500 hover:bg-yellow-600 px-6 py-3 rounded-xl font-bold transition duration-300 hover:scale-105"
+                  className="bg-yellow-500 hover:bg-yellow-600 px-5 py-3 rounded-xl font-bold"
                 >
                   Edit
                 </button>
@@ -256,24 +446,14 @@ function Exercises() {
                   onClick={() =>
                     handleDeleteExercise(exercise.id)
                   }
-                  className="bg-red-500 hover:bg-red-600 px-6 py-3 rounded-xl font-bold transition duration-300 hover:scale-105"
+                  className="bg-red-500 hover:bg-red-600 px-5 py-3 rounded-xl font-bold"
                 >
                   Delete
-                </button>
-
-                <button
-                  onClick={() =>
-                    handleSaveWorkout(exercise)
-                  }
-                  className="bg-green-500 hover:bg-green-600 px-6 py-3 rounded-xl font-bold transition duration-300 hover:scale-105"
-                >
-                  Save Workout
                 </button>
 
               </div>
 
             </div>
-
           ))}
 
         </div>
