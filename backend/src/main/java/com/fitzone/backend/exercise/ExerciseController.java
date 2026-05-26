@@ -1,4 +1,3 @@
-
 package com.fitzone.backend.exercise;
 
 import org.springframework.web.bind.annotation.*;
@@ -24,9 +23,7 @@ public class ExerciseController {
             @RequestBody Exercise exercise
     ) {
 
-        return exerciseService.addExercise(
-                exercise
-        );
+        return exerciseService.addExercise(exercise);
     }
 
     @GetMapping
@@ -40,19 +37,7 @@ public class ExerciseController {
             @PathVariable Long id
     ) {
 
-        return exerciseService
-                .getExerciseById(id);
-    }
-
-    @GetMapping("/category/{category}")
-    public List<Exercise> getExercisesByCategory(
-            @PathVariable String category
-    ) {
-
-        return exerciseService
-                .getExercisesByCategory(
-                        category
-                );
+        return exerciseService.getExerciseById(id);
     }
 
     @DeleteMapping("/{id}")
@@ -69,11 +54,9 @@ public class ExerciseController {
             @RequestBody Exercise exercise
     ) {
 
-        return exerciseService
-                .updateExercise(
-                        id,
-                        exercise
-                );
+        return exerciseService.updateExercise(
+                id,
+                exercise
+        );
     }
 }
-

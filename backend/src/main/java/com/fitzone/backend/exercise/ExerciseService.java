@@ -1,4 +1,3 @@
-
 package com.fitzone.backend.exercise;
 
 import org.springframework.stereotype.Service;
@@ -40,14 +39,6 @@ public class ExerciseService {
                                 "Exercise not found"
                         )
                 );
-    }
-
-    public List<Exercise> getExercisesByCategory(
-            String category
-    ) {
-
-        return exerciseRepository
-                .findByCategory(category);
     }
 
     public void deleteExercise(
@@ -106,4 +97,3 @@ public class ExerciseService {
         return exerciseRepository.save(exercise);
     }
 }
-
