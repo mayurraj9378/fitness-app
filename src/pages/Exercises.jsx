@@ -7,14 +7,8 @@ import { Link } from "react-router-dom";
 
 function Exercises() {
 
-  const [allExercises, setAllExercises] =
+  const [exercises, setExercises] =
     useState([]);
-
-  const [filteredExercises, setFilteredExercises] =
-    useState([]);
-
-  const [selectedCategory, setSelectedCategory] =
-    useState("All");
 
   const [name, setName] =
     useState("");
@@ -37,35 +31,24 @@ function Exercises() {
   const [reelUrl, setReelUrl] =
     useState("");
 
-  const [editingId, setEditingId] =
-    useState(null);
+  const [imageUrl, setImageUrl] =
+    useState("");
 
-  const categories = [
-    "All",
-    "Chest",
-    "Back",
-    "Legs",
-    "Shoulders",
-    "Arms",
-    "Abs"
-  ];
+  const fetchExercises = async () => {
 
-  const fetchExercises = () => {
+    try {
 
-    axios
-      .get("http://localhost:8080/exercises")
+      const response =
+        await axios.get(
+          "http://localhost:8080/exercises"
+        );
 
-      .then((response) => {
+      setExercises(response.data);
 
-        setAllExercises(response.data);
+    } catch (error) {
 
-        setFilteredExercises(response.data);
-      })
-
-      .catch((error) => {
-
-        console.log(error);
-      });
+      console.log(error);
+    }
   };
 
   useEffect(() => {
@@ -74,389 +57,267 @@ function Exercises() {
 
   }, []);
 
-  const filterExercises = (category) => {
+  const handleAddExercise =
+    async () => {
 
-    setSelectedCategory(category);
+      try {
 
-    if (category === "All") {
-
-      setFilteredExercises(allExercises);
-
-    } else {
-
-      const filtered =
-        allExercises.filter(
-          (exercise) =>
-            exercise.category === category
+        await axios.post(
+          "http://localhost:8080/exercises",
+          {
+            name,
+            category,
+            description,
+            difficulty,
+            setsReps,
+            youtubeUrl,
+            reelUrl,
+            imageUrl
+          }
         );
 
-      setFilteredExercises(filtered);
-    }
-  };
-
-  const clearForm = () => {
-
-    setName("");
-
-    setCategory("");
-
-    setDescription("");
-
-    setDifficulty("");
-
-    setSetsReps("");
-
-    setYoutubeUrl("");
-
-    setReelUrl("");
-
-    setEditingId(null);
-  };
-
-  const handleAddExercise = () => {
-
-    const newExercise = {
-
-      name,
-
-      category,
-
-      description,
-
-      difficulty,
-
-      setsReps,
-
-      youtubeUrl,
-
-      reelUrl
-    };
-
-    axios
-
-      .post(
-        "http://localhost:8080/exercises",
-        newExercise
-      )
-
-      .then(() => {
-
-        fetchExercises();
-
-        clearForm();
-
         alert("Exercise Added!");
-      })
 
-      .catch((error) => {
-
-        console.log(error);
-      });
-  };
-
-  const handleDeleteExercise = (id) => {
-
-    axios
-
-      .delete(
-        `http://localhost:8080/exercises/${id}`
-      )
-
-      .then(() => {
+        setName("");
+        setCategory("");
+        setDescription("");
+        setDifficulty("");
+        setSetsReps("");
+        setYoutubeUrl("");
+        setReelUrl("");
+        setImageUrl("");
 
         fetchExercises();
 
-        alert("Exercise Deleted!");
-      })
-
-      .catch((error) => {
+      } catch (error) {
 
         console.log(error);
-      });
-  };
 
-  const handleEditClick = (exercise) => {
-
-    setEditingId(exercise.id);
-
-    setName(exercise.name);
-
-    setCategory(exercise.category);
-
-    setDescription(exercise.description);
-
-    setDifficulty(exercise.difficulty);
-
-    setSetsReps(exercise.setsReps);
-
-    setYoutubeUrl(exercise.youtubeUrl);
-
-    setReelUrl(exercise.reelUrl);
-  };
-
-  const handleUpdateExercise = () => {
-
-    const updatedExercise = {
-
-      name,
-
-      category,
-
-      description,
-
-      difficulty,
-
-      setsReps,
-
-      youtubeUrl,
-
-      reelUrl
+        alert("Failed to add exercise");
+      }
     };
 
-    axios
+  const handleDeleteExercise =
+    async (id) => {
 
-      .put(
-        `http://localhost:8080/exercises/${editingId}`,
-        updatedExercise
-      )
+      try {
 
-      .then(() => {
+        await axios.delete(
+          `http://localhost:8080/exercises/${id}`
+        );
 
         fetchExercises();
 
-        clearForm();
-
-        alert("Exercise Updated!");
-      })
-
-      .catch((error) => {
+      } catch (error) {
 
         console.log(error);
-      });
-  };
+      }
+    };
 
   return (
 
-    <div className="bg-black min-h-screen text-white py-20 px-6">
+    <div className="bg-black min-h-screen text-white px-8 py-10">
 
-      <div className="max-w-7xl mx-auto">
+      <h1 className="text-5xl font-bold mb-10">
 
-        <h1 className="text-5xl font-bold text-center mb-12">
+        Exercise
+        <span className="text-red-500">
 
-          EXERCISE
-          <span className="text-red-500">
-            {" "}LIBRARY
-          </span>
+          {" "}Library
 
-        </h1>
+        </span>
 
-        {/* CATEGORY FILTERS */}
+      </h1>
 
-        <div className="flex flex-wrap gap-4 justify-center mb-10">
+      {/* FORM */}
 
-          {categories.map((cat) => (
+      <div className="bg-zinc-900 p-8 rounded-3xl mb-10">
 
-            <button
-              key={cat}
+        <h2 className="text-3xl font-bold mb-8">
 
-              onClick={() =>
-                filterExercises(cat)
-              }
+          Add Exercise
 
-              className={`px-6 py-3 rounded-xl font-bold transition-all duration-300 ${
-                selectedCategory === cat
-                  ? "bg-red-500"
-                  : "bg-zinc-800 hover:bg-zinc-700"
-              }`}
-            >
-              {cat}
-            </button>
-          ))}
+        </h2>
+
+        <div className="grid md:grid-cols-2 gap-6">
+
+          <input
+            type="text"
+            placeholder="Exercise Name"
+            value={name}
+            onChange={(e) =>
+              setName(e.target.value)
+            }
+            className="bg-black border border-white/10 p-4 rounded-2xl"
+          />
+
+          <input
+            type="text"
+            placeholder="Category"
+            value={category}
+            onChange={(e) =>
+              setCategory(e.target.value)
+            }
+            className="bg-black border border-white/10 p-4 rounded-2xl"
+          />
+
+          <input
+            type="text"
+            placeholder="Difficulty"
+            value={difficulty}
+            onChange={(e) =>
+              setDifficulty(e.target.value)
+            }
+            className="bg-black border border-white/10 p-4 rounded-2xl"
+          />
+
+          <input
+            type="text"
+            placeholder="Sets/Reps"
+            value={setsReps}
+            onChange={(e) =>
+              setSetsReps(e.target.value)
+            }
+            className="bg-black border border-white/10 p-4 rounded-2xl"
+          />
+
+          <input
+            type="text"
+            placeholder="YouTube Embed URL"
+            value={youtubeUrl}
+            onChange={(e) =>
+              setYoutubeUrl(e.target.value)
+            }
+            className="bg-black border border-white/10 p-4 rounded-2xl md:col-span-2"
+          />
+
+          <input
+            type="text"
+            placeholder="Instagram Reel URL"
+            value={reelUrl}
+            onChange={(e) =>
+              setReelUrl(e.target.value)
+            }
+            className="bg-black border border-white/10 p-4 rounded-2xl md:col-span-2"
+          />
+
+          <input
+            type="text"
+            placeholder="Image URL"
+            value={imageUrl}
+            onChange={(e) =>
+              setImageUrl(e.target.value)
+            }
+            className="bg-black border border-white/10 p-4 rounded-2xl md:col-span-2"
+          />
+
+          <textarea
+            placeholder="Description"
+            value={description}
+            onChange={(e) =>
+              setDescription(e.target.value)
+            }
+            className="bg-black border border-white/10 p-4 rounded-2xl md:col-span-2 min-h-[120px]"
+          />
 
         </div>
 
-        {/* FORM */}
+        <button
+          onClick={handleAddExercise}
+          className="bg-red-500 hover:bg-red-600 px-10 py-4 rounded-2xl font-bold text-xl mt-8"
+        >
 
-        <div className="bg-zinc-900 rounded-3xl p-8 mb-12">
+          Add Exercise
 
-          <h2 className="text-3xl font-bold mb-8">
+        </button>
 
-            {editingId
-              ? "Update Exercise"
-              : "Add Exercise"}
+      </div>
 
-          </h2>
+      {/* EXERCISES */}
 
-          <div className="grid md:grid-cols-2 gap-6">
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
 
-            <input
-              type="text"
-              placeholder="Exercise Name"
-              value={name}
-              onChange={(e) =>
-                setName(e.target.value)
-              }
-              className="bg-black p-4 rounded-xl"
-            />
+        {exercises.map((exercise) => (
 
-            <input
-              type="text"
-              placeholder="Category"
-              value={category}
-              onChange={(e) =>
-                setCategory(e.target.value)
-              }
-              className="bg-black p-4 rounded-xl"
-            />
-
-            <textarea
-              placeholder="Description"
-              value={description}
-              onChange={(e) =>
-                setDescription(e.target.value)
-              }
-              className="bg-black p-4 rounded-xl md:col-span-2"
-            />
-
-            <input
-              type="text"
-              placeholder="Difficulty"
-              value={difficulty}
-              onChange={(e) =>
-                setDifficulty(e.target.value)
-              }
-              className="bg-black p-4 rounded-xl"
-            />
-
-            <input
-              type="text"
-              placeholder="Sets/Reps"
-              value={setsReps}
-              onChange={(e) =>
-                setSetsReps(e.target.value)
-              }
-              className="bg-black p-4 rounded-xl"
-            />
-
-            <input
-              type="text"
-              placeholder="YouTube URL"
-              value={youtubeUrl}
-              onChange={(e) =>
-                setYoutubeUrl(e.target.value)
-              }
-              className="bg-black p-4 rounded-xl"
-            />
-
-            <input
-              type="text"
-              placeholder="Instagram Reel URL"
-              value={reelUrl}
-              onChange={(e) =>
-                setReelUrl(e.target.value)
-              }
-              className="bg-black p-4 rounded-xl"
-            />
-
-          </div>
-
-          <button
-
-            onClick={
-              editingId
-                ? handleUpdateExercise
-                : handleAddExercise
-            }
-
-            className={`mt-8 px-8 py-4 rounded-xl font-bold transition-all duration-300 ${
-              editingId
-                ? "bg-yellow-500 hover:bg-yellow-600"
-                : "bg-red-500 hover:bg-red-600"
-            }`}
+          <div
+            key={exercise.id}
+            className="bg-zinc-900 p-8 rounded-3xl border border-white/10"
           >
 
-            {editingId
-              ? "Update Exercise"
-              : "Add Exercise"}
+            {exercise.imageUrl && (
 
-          </button>
+              <img
+                src={exercise.imageUrl}
+                alt={exercise.name}
+                className="w-full h-52 object-cover rounded-2xl mb-6"
+              />
 
-        </div>
+            )}
 
-        {/* EXERCISE CARDS */}
+            <h2 className="text-4xl font-bold text-red-500 mb-6">
 
-        <div className="grid md:grid-cols-3 gap-8">
+              {exercise.name}
 
-          {filteredExercises.map((exercise) => (
+            </h2>
 
-            <div
-              key={exercise.id}
-              className="bg-zinc-900 rounded-3xl p-8"
-            >
+            <p className="text-gray-300 text-2xl mb-4">
 
-              <h2 className="text-3xl font-bold text-red-500 mb-4">
+              Category: {exercise.category}
 
-                {exercise.name}
+            </p>
 
-              </h2>
+            <p className="text-gray-400 mb-4">
 
-              <p className="text-gray-400 mb-3">
+              Difficulty:
+              {" "}
+              {exercise.difficulty || "Not Added"}
 
-                Category:
-                {" "}
-                {exercise.category}
+            </p>
 
-              </p>
+            <p className="text-gray-400 mb-8">
 
-              <p className="text-gray-400 mb-3">
+              Sets/Reps:
+              {" "}
+              {exercise.setsReps || "Not Added"}
 
-                Difficulty:
-                {" "}
-                {exercise.difficulty}
+            </p>
 
-              </p>
+            <div className="flex gap-4 flex-wrap">
 
-              <p className="text-gray-400 mb-6">
+              <Link
+                to={`/exercise/${exercise.id}`}
+                className="bg-blue-500 hover:bg-blue-600 px-6 py-3 rounded-xl font-bold"
+              >
 
-                Sets/Reps:
-                {" "}
-                {exercise.setsReps}
+                Details
 
-              </p>
+              </Link>
 
-              <div className="flex flex-wrap gap-3">
+              <button
+                className="bg-yellow-500 hover:bg-yellow-600 px-6 py-3 rounded-xl font-bold"
+              >
 
-                <Link
-                  to={`/exercise/${exercise.id}`}
-                  className="bg-blue-500 hover:bg-blue-600 px-5 py-3 rounded-xl font-bold"
-                >
-                  Details
-                </Link>
+                Edit
 
-                <button
-                  onClick={() =>
-                    handleEditClick(exercise)
-                  }
-                  className="bg-yellow-500 hover:bg-yellow-600 px-5 py-3 rounded-xl font-bold"
-                >
-                  Edit
-                </button>
+              </button>
 
-                <button
-                  onClick={() =>
-                    handleDeleteExercise(exercise.id)
-                  }
-                  className="bg-red-500 hover:bg-red-600 px-5 py-3 rounded-xl font-bold"
-                >
-                  Delete
-                </button>
+              <button
+                onClick={() =>
+                  handleDeleteExercise(
+                    exercise.id
+                  )
+                }
+                className="bg-red-500 hover:bg-red-600 px-6 py-3 rounded-xl font-bold"
+              >
 
-              </div>
+                Delete
+
+              </button>
 
             </div>
-          ))}
 
-        </div>
+          </div>
+        ))}
 
       </div>
 

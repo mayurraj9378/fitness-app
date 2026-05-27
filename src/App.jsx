@@ -35,8 +35,12 @@ function App() {
       />
 
       <Route
-        path="/exercise/:name"
-        element={<ExerciseDetails />}
+        path="/exercise/:id"
+        element={
+          <ProtectedRoute>
+            <ExerciseDetails />
+          </ProtectedRoute>
+        }
       />
 
       <Route
@@ -88,3 +92,4 @@ function App() {
 }
 
 export default App;
+
