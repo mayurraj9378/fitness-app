@@ -1,145 +1,457 @@
-package com.fitzone.backend.exercise;
+import { useEffect, useState } from "react";
 
-import jakarta.persistence.*;
+import axios from "axios";
 
-@Entity
-public class Exercise {
+import { Link } from "react-router-dom";
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+import toast from "react-hot-toast";
 
-    private Long id;
+function Exercises() {
 
-    private String name;
+  const [exercises, setExercises] =
+    useState([]);
 
-    private String category;
+  const [searchTerm, setSearchTerm] =
+    useState("");
 
-    @Column(length = 1000)
-    private String description;
+  const [selectedCategory, setSelectedCategory] =
+    useState("All");
 
-    private String difficulty;
+  const [selectedDifficulty, setSelectedDifficulty] =
+    useState("All");
 
-    private String setsReps;
+  const [name, setName] =
+    useState("");
 
-    private String youtubeUrl;
+  const [category, setCategory] =
+    useState("");
 
-    private String reelUrl;
+  const [description, setDescription] =
+    useState("");
 
-    private String imageUrl;
+  const [difficulty, setDifficulty] =
+    useState("");
 
-    public Exercise() {
+  const [setsReps, setSetsReps] =
+    useState("");
+
+  const [youtubeUrl, setYoutubeUrl] =
+    useState("");
+
+  const [reelUrl, setReelUrl] =
+    useState("");
+
+  const [imageUrl, setImageUrl] =
+    useState("");
+
+  const fetchExercises = async () => {
+
+    try {
+
+      const response =
+        await axios.get(
+          "http://localhost:8080/exercises"
+        );
+
+      setExercises(response.data);
+
+    } catch (error) {
+
+      console.log(error);
+
+      toast.error("Failed to load exercises");
     }
+  };
 
-    public Exercise(
-            String name,
-            String category,
-            String description,
-            String difficulty,
-            String setsReps,
-            String youtubeUrl,
-            String reelUrl,
-            String imageUrl
-    ) {
+  useEffect(() => {
 
-        this.name = name;
+    fetchExercises();
 
-        this.category = category;
+  }, []);
 
-        this.description = description;
+  const handleAddExercise =
+    async () => {
 
-        this.difficulty = difficulty;
+      try {
 
-        this.setsReps = setsReps;
+        await axios.post(
+          "http://localhost:8080/exercises",
+          {
+            name,
+            category,
+            description,
+            difficulty,
+            setsReps,
+            youtubeUrl,
+            reelUrl,
+            imageUrl
+          }
+        );
 
-        this.youtubeUrl = youtubeUrl;
+        toast.success("Exercise Added!");
 
-        this.reelUrl = reelUrl;
+        setName("");
+        setCategory("");
+        setDescription("");
+        setDifficulty("");
+        setSetsReps("");
+        setYoutubeUrl("");
+        setReelUrl("");
+        setImageUrl("");
 
-        this.imageUrl = imageUrl;
-    }
+        fetchExercises();
 
-    public Long getId() {
+      } catch (error) {
 
-        return id;
-    }
+        console.log(error);
 
-    public String getName() {
+        toast.error("Failed to add exercise");
+      }
+    };
 
-        return name;
-    }
+  const handleDeleteExercise =
+    async (id) => {
 
-    public void setName(String name) {
+      try {
 
-        this.name = name;
-    }
+        await axios.delete(
+          `http://localhost:8080/exercises/${id}`
+        );
 
-    public String getCategory() {
+        toast.success("Exercise Deleted!");
 
-        return category;
-    }
+        fetchExercises();
 
-    public void setCategory(String category) {
+      } catch (error) {
 
-        this.category = category;
-    }
+        console.log(error);
 
-    public String getDescription() {
+        toast.error("Failed to delete exercise");
+      }
+    };
 
-        return description;
-    }
+  const categories = [
+    "All",
+    "Chest",
+    "Back",
+    "Biceps",
+    "Triceps",
+    "Shoulders",
+    "Legs",
+    "Core"
+  ];
 
-    public void setDescription(String description) {
+  const difficulties = [
+    "All",
+    "Beginner",
+    "Intermediate",
+    "Advanced"
+  ];
 
-        this.description = description;
-    }
+  const filteredExercises =
+    exercises.filter((exercise) => {
 
-    public String getDifficulty() {
+      const matchesSearch =
+        exercise.name
+          .toLowerCase()
+          .includes(
+            searchTerm.toLowerCase()
+          );
 
-        return difficulty;
-    }
+      const matchesCategory =
+        selectedCategory === "All"
+          ? true
+          : exercise.category
+              ?.toLowerCase() ===
+            selectedCategory.toLowerCase();
 
-    public void setDifficulty(String difficulty) {
+      const matchesDifficulty =
+        selectedDifficulty === "All"
+          ? true
+          : exercise.difficulty
+              ?.toLowerCase() ===
+            selectedDifficulty.toLowerCase();
 
-        this.difficulty = difficulty;
-    }
+      return (
+        matchesSearch &&
+        matchesCategory &&
+        matchesDifficulty
+      );
+    });
 
-    public String getSetsReps() {
+  return (
 
-        return setsReps;
-    }
+    <div className="bg-black min-h-screen text-white px-8 py-10">
 
-    public void setSetsReps(String setsReps) {
+      <h1 className="text-5xl font-bold mb-10">
 
-        this.setsReps = setsReps;
-    }
+        Exercise
+        <span className="text-red-500">
 
-    public String getYoutubeUrl() {
+          {" "}Library
 
-        return youtubeUrl;
-    }
+        </span>
 
-    public void setYoutubeUrl(String youtubeUrl) {
+      </h1>
 
-        this.youtubeUrl = youtubeUrl;
-    }
+      {/* ADD EXERCISE FORM */}
 
-    public String getReelUrl() {
+      <div className="bg-zinc-900 p-8 rounded-3xl mb-10">
 
-        return reelUrl;
-    }
+        <h2 className="text-3xl font-bold mb-8">
 
-    public void setReelUrl(String reelUrl) {
+          Add Exercise
 
-        this.reelUrl = reelUrl;
-    }
+        </h2>
 
-    public String getImageUrl() {
+        <div className="grid md:grid-cols-2 gap-6">
 
-        return imageUrl;
-    }
+          <input
+            type="text"
+            placeholder="Exercise Name"
+            value={name}
+            onChange={(e) =>
+              setName(e.target.value)
+            }
+            className="bg-black border border-white/10 p-4 rounded-2xl"
+          />
 
-    public void setImageUrl(String imageUrl) {
+          <input
+            type="text"
+            placeholder="Category"
+            value={category}
+            onChange={(e) =>
+              setCategory(e.target.value)
+            }
+            className="bg-black border border-white/10 p-4 rounded-2xl"
+          />
 
-        this.imageUrl = imageUrl;
-    }
+          <input
+            type="text"
+            placeholder="Difficulty"
+            value={difficulty}
+            onChange={(e) =>
+              setDifficulty(e.target.value)
+            }
+            className="bg-black border border-white/10 p-4 rounded-2xl"
+          />
+
+          <input
+            type="text"
+            placeholder="Sets/Reps"
+            value={setsReps}
+            onChange={(e) =>
+              setSetsReps(e.target.value)
+            }
+            className="bg-black border border-white/10 p-4 rounded-2xl"
+          />
+
+          <input
+            type="text"
+            placeholder="YouTube Embed URL"
+            value={youtubeUrl}
+            onChange={(e) =>
+              setYoutubeUrl(e.target.value)
+            }
+            className="bg-black border border-white/10 p-4 rounded-2xl md:col-span-2"
+          />
+
+          <input
+            type="text"
+            placeholder="Instagram Reel URL"
+            value={reelUrl}
+            onChange={(e) =>
+              setReelUrl(e.target.value)
+            }
+            className="bg-black border border-white/10 p-4 rounded-2xl md:col-span-2"
+          />
+
+          <input
+            type="text"
+            placeholder="Image URL"
+            value={imageUrl}
+            onChange={(e) =>
+              setImageUrl(e.target.value)
+            }
+            className="bg-black border border-white/10 p-4 rounded-2xl md:col-span-2"
+          />
+
+          <textarea
+            placeholder="Description"
+            value={description}
+            onChange={(e) =>
+              setDescription(e.target.value)
+            }
+            className="bg-black border border-white/10 p-4 rounded-2xl md:col-span-2 min-h-[120px]"
+          />
+
+        </div>
+
+        <button
+          onClick={handleAddExercise}
+          className="bg-red-500 hover:bg-red-600 px-10 py-4 rounded-2xl font-bold text-xl mt-8"
+        >
+
+          Add Exercise
+
+        </button>
+
+      </div>
+
+      {/* FILTERS */}
+
+      <div className="bg-zinc-900 p-6 rounded-3xl mb-10">
+
+        <div className="grid md:grid-cols-3 gap-6">
+
+          <input
+            type="text"
+            placeholder="Search Exercise..."
+            value={searchTerm}
+            onChange={(e) =>
+              setSearchTerm(e.target.value)
+            }
+            className="bg-black border border-white/10 p-4 rounded-2xl"
+          />
+
+          <select
+            value={selectedCategory}
+            onChange={(e) =>
+              setSelectedCategory(e.target.value)
+            }
+            className="bg-black border border-white/10 p-4 rounded-2xl"
+          >
+
+            {categories.map((cat) => (
+
+              <option
+                key={cat}
+                value={cat}
+              >
+
+                {cat}
+
+              </option>
+            ))}
+
+          </select>
+
+          <select
+            value={selectedDifficulty}
+            onChange={(e) =>
+              setSelectedDifficulty(e.target.value)
+            }
+            className="bg-black border border-white/10 p-4 rounded-2xl"
+          >
+
+            {difficulties.map((level) => (
+
+              <option
+                key={level}
+                value={level}
+              >
+
+                {level}
+
+              </option>
+            ))}
+
+          </select>
+
+        </div>
+
+      </div>
+
+      {/* EXERCISES */}
+
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+        {filteredExercises.map((exercise) => (
+
+          <div
+            key={exercise.id}
+            className="bg-zinc-900 p-8 rounded-3xl border border-white/10"
+          >
+
+            {exercise.imageUrl && (
+
+              <img
+                src={exercise.imageUrl}
+                alt={exercise.name}
+                className="w-full h-52 object-cover rounded-2xl mb-6"
+              />
+
+            )}
+
+            <h2 className="text-4xl font-bold text-red-500 mb-6">
+
+              {exercise.name}
+
+            </h2>
+
+            <p className="text-gray-300 text-2xl mb-4">
+
+              Category: {exercise.category}
+
+            </p>
+
+            <p className="text-gray-400 mb-4">
+
+              Difficulty:
+              {" "}
+              {exercise.difficulty || "Not Added"}
+
+            </p>
+
+            <p className="text-gray-400 mb-8">
+
+              Sets/Reps:
+              {" "}
+              {exercise.setsReps || "Not Added"}
+
+            </p>
+
+            <div className="flex gap-4 flex-wrap">
+
+              <Link
+                to={`/exercise/${exercise.id}`}
+                className="bg-blue-500 hover:bg-blue-600 px-6 py-3 rounded-xl font-bold"
+              >
+
+                Details
+
+              </Link>
+
+              <button
+                className="bg-yellow-500 hover:bg-yellow-600 px-6 py-3 rounded-xl font-bold"
+              >
+
+                Edit
+
+              </button>
+
+              <button
+                onClick={() =>
+                  handleDeleteExercise(
+                    exercise.id
+                  )
+                }
+                className="bg-red-500 hover:bg-red-600 px-6 py-3 rounded-xl font-bold"
+              >
+
+                Delete
+
+              </button>
+
+            </div>
+
+          </div>
+        ))}
+
+      </div>
+
+    </div>
+  );
 }
+
+export default Exercises;
