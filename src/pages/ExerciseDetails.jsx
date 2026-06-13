@@ -1,13 +1,18 @@
-
 import { useEffect, useState } from "react";
 
 import { useParams } from "react-router-dom";
 
 import axios from "axios";
 
+import toast from "react-hot-toast";
+
+import { useTheme } from "../context/ThemeContext";
+
 function ExerciseDetails() {
 
   const { id } = useParams();
+
+  const { darkMode } = useTheme();
 
   const [exercise, setExercise] =
     useState(null);
@@ -43,7 +48,9 @@ function ExerciseDetails() {
 
       console.log(err);
 
-      setError("Failed to load exercise");
+      setError(
+        "Failed to load exercise"
+      );
 
     } finally {
 
@@ -78,13 +85,17 @@ function ExerciseDetails() {
         }
       );
 
-      alert("Workout Saved!");
+      toast.success(
+        "Workout Saved!"
+      );
 
     } catch (error) {
 
       console.log(error);
 
-      alert("Failed to save workout");
+      toast.error(
+        "Failed to save workout"
+      );
     }
   };
 
@@ -92,7 +103,13 @@ function ExerciseDetails() {
 
     return (
 
-      <div className="bg-black min-h-screen text-white flex items-center justify-center text-3xl font-bold">
+      <div
+        className={
+          darkMode
+            ? "bg-black min-h-screen text-white flex items-center justify-center text-3xl font-bold"
+            : "bg-white min-h-screen text-black flex items-center justify-center text-3xl font-bold"
+        }
+      >
 
         Loading...
 
@@ -104,7 +121,13 @@ function ExerciseDetails() {
 
     return (
 
-      <div className="bg-black min-h-screen text-red-500 flex items-center justify-center text-3xl font-bold">
+      <div
+        className={
+          darkMode
+            ? "bg-black min-h-screen text-red-500 flex items-center justify-center text-3xl font-bold"
+            : "bg-white min-h-screen text-red-500 flex items-center justify-center text-3xl font-bold"
+        }
+      >
 
         {error}
 
@@ -114,11 +137,23 @@ function ExerciseDetails() {
 
   return (
 
-    <div className="bg-black min-h-screen text-white py-20 px-6">
+    <div
+      className={
+        darkMode
+          ? "bg-black min-h-screen text-white py-20 px-6 transition-all duration-300"
+          : "bg-white min-h-screen text-black py-20 px-6 transition-all duration-300"
+      }
+    >
 
       <div className="max-w-5xl mx-auto">
 
-        <div className="bg-zinc-900 rounded-3xl p-10 border border-white/10">
+        <div
+          className={
+            darkMode
+              ? "bg-zinc-900 rounded-3xl p-10 border border-white/10"
+              : "bg-gray-100 rounded-3xl p-10 border border-black/10"
+          }
+        >
 
           <h1 className="text-5xl font-bold text-red-500 mb-8">
 
@@ -128,7 +163,13 @@ function ExerciseDetails() {
 
           <div className="grid md:grid-cols-2 gap-6 mb-10">
 
-            <div className="bg-black p-6 rounded-2xl">
+            <div
+              className={
+                darkMode
+                  ? "bg-black p-6 rounded-2xl"
+                  : "bg-white p-6 rounded-2xl"
+              }
+            >
 
               <h2 className="text-2xl font-bold mb-4">
 
@@ -136,7 +177,7 @@ function ExerciseDetails() {
 
               </h2>
 
-              <p className="text-gray-400 text-lg">
+              <p className="text-lg">
 
                 {exercise?.category || "Not Added"}
 
@@ -144,7 +185,13 @@ function ExerciseDetails() {
 
             </div>
 
-            <div className="bg-black p-6 rounded-2xl">
+            <div
+              className={
+                darkMode
+                  ? "bg-black p-6 rounded-2xl"
+                  : "bg-white p-6 rounded-2xl"
+              }
+            >
 
               <h2 className="text-2xl font-bold mb-4">
 
@@ -152,7 +199,7 @@ function ExerciseDetails() {
 
               </h2>
 
-              <p className="text-gray-400 text-lg">
+              <p className="text-lg">
 
                 {exercise?.difficulty || "Not Added"}
 
@@ -160,7 +207,13 @@ function ExerciseDetails() {
 
             </div>
 
-            <div className="bg-black p-6 rounded-2xl md:col-span-2">
+            <div
+              className={
+                darkMode
+                  ? "bg-black p-6 rounded-2xl md:col-span-2"
+                  : "bg-white p-6 rounded-2xl md:col-span-2"
+              }
+            >
 
               <h2 className="text-2xl font-bold mb-4">
 
@@ -168,7 +221,7 @@ function ExerciseDetails() {
 
               </h2>
 
-              <p className="text-gray-400 text-lg">
+              <p className="text-lg">
 
                 {exercise?.setsReps || "Not Added"}
 
@@ -178,7 +231,13 @@ function ExerciseDetails() {
 
           </div>
 
-          <div className="bg-black p-6 rounded-2xl mb-10">
+          <div
+            className={
+              darkMode
+                ? "bg-black p-6 rounded-2xl mb-10"
+                : "bg-white p-6 rounded-2xl mb-10"
+            }
+          >
 
             <h2 className="text-3xl font-bold mb-6">
 
@@ -186,10 +245,12 @@ function ExerciseDetails() {
 
             </h2>
 
-            <p className="text-gray-400 text-lg leading-8">
+            <p className="text-lg leading-8">
 
-              {exercise?.description ||
-                "No description added"}
+              {
+                exercise?.description ||
+                "No description added"
+              }
 
             </p>
 
@@ -228,7 +289,7 @@ function ExerciseDetails() {
                 href={exercise.reelUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="bg-pink-500 hover:bg-pink-600 px-8 py-4 rounded-xl font-bold inline-block"
+                className="bg-pink-500 hover:bg-pink-600 px-8 py-4 rounded-xl font-bold inline-block text-white"
               >
 
                 Watch Instagram Reel
@@ -242,7 +303,7 @@ function ExerciseDetails() {
 
             onClick={handleSaveWorkout}
 
-            className="bg-green-500 hover:bg-green-600 px-8 py-4 rounded-xl font-bold text-lg transition-all duration-300"
+            className="bg-green-500 hover:bg-green-600 px-8 py-4 rounded-xl font-bold text-lg transition-all duration-300 text-white"
           >
 
             Save Workout
@@ -258,4 +319,3 @@ function ExerciseDetails() {
 }
 
 export default ExerciseDetails;
-

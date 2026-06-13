@@ -1,65 +1,112 @@
+import { useTheme } from "../../context/ThemeContext";
+
 function WorkoutPlans() {
+
+  const { darkMode } = useTheme();
+
   const plans = [
+
     {
-      title: "Fat Loss",
-      description:
-        "Burn calories and lose fat with high intensity workouts.",
-      level: "Beginner",
+      title: "Beginner Plan",
+      duration: "4 Weeks",
+      desc: "Perfect for starting your fitness journey.",
     },
+
     {
       title: "Muscle Gain",
-      description:
-        "Build lean muscle mass with strength-focused training.",
-      level: "Intermediate",
+      duration: "8 Weeks",
+      desc: "Build muscle with structured workouts.",
     },
+
     {
-      title: "Strength Training",
-      description:
-        "Increase your power and overall body strength.",
-      level: "Advanced",
+      title: "Fat Loss",
+      duration: "6 Weeks",
+      desc: "Burn calories and lose body fat fast.",
     },
   ];
 
   return (
-    <section className="bg-zinc-950 text-white py-20">
+
+    <section
+      className={
+        darkMode
+          ? "bg-black text-white py-20 transition-all duration-300"
+          : "bg-white text-black py-20 transition-all duration-300"
+      }
+    >
+
       <div className="max-w-7xl mx-auto px-6">
 
-        <div className="text-center mb-14">
-          <h2 className="text-4xl md:text-5xl font-bold">
-            WORKOUT <span className="text-red-500">PLANS</span>
-          </h2>
+        <div className="text-center mb-16">
 
-          <p className="text-gray-400 mt-4">
-            Choose the perfect workout plan according to your fitness goals.
+          <h1 className="text-5xl font-bold mb-4">
+
+            Workout
+
+            <span className="text-red-500">
+
+              {" "}Plans
+
+            </span>
+
+          </h1>
+
+          <p className="text-lg opacity-70">
+
+            Choose a plan that matches your fitness goals.
+
           </p>
+
         </div>
 
-        <div className="grid md:grid-cols-3 gap-8">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+
           {plans.map((plan, index) => (
+
             <div
               key={index}
-              className="bg-black border border-white/10 rounded-3xl p-8 hover:border-red-500 transition duration-300"
+              className={
+                darkMode
+                  ? "bg-zinc-900 border border-white/10 rounded-3xl p-8 hover:border-red-500 transition duration-300"
+                  : "bg-gray-100 border border-black/10 rounded-3xl p-8 hover:border-red-500 transition duration-300"
+              }
             >
-              <h3 className="text-3xl font-bold text-red-500">
+
+              <h2 className="text-3xl font-bold text-red-500 mb-4">
+
                 {plan.title}
-              </h3>
 
-              <p className="text-gray-400 mt-4">
-                {plan.description}
+              </h2>
+
+              <p className="text-lg mb-3">
+
+                Duration:
+                {" "}
+                {plan.duration}
+
               </p>
 
-              <p className="mt-6 text-sm text-gray-300">
-                Level: {plan.level}
+              <p className="opacity-70 mb-8">
+
+                {plan.desc}
+
               </p>
 
-              <button className="mt-8 bg-red-500 hover:bg-red-600 px-6 py-3 rounded-lg font-semibold transition duration-300">
-                Join Now
+              <button
+                className="bg-red-500 hover:bg-red-600 px-6 py-3 rounded-xl font-bold text-white transition duration-300"
+              >
+
+                Start Plan
+
               </button>
+
             </div>
           ))}
+
         </div>
 
       </div>
+
     </section>
   );
 }

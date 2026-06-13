@@ -1,215 +1,158 @@
 import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  Tooltip,
-  ResponsiveContainer,
-} from "recharts";
+  FaDumbbell,
+  FaFire,
+  FaHeartbeat,
+  FaRunning
+} from "react-icons/fa";
 
-import { useEffect, useState } from "react";
-
-const data = [
-  { day: "Mon", calories: 300 },
-  { day: "Tue", calories: 450 },
-  { day: "Wed", calories: 500 },
-  { day: "Thu", calories: 700 },
-  { day: "Fri", calories: 650 },
-  { day: "Sat", calories: 800 },
-  { day: "Sun", calories: 550 },
-];
+import { useTheme } from "../context/ThemeContext";
 
 function Dashboard() {
+
+  const { darkMode } = useTheme();
+
   const stats = [
+
     {
       title: "Calories Burned",
       value: "1240",
+      icon: <FaFire />,
+      color: "text-orange-500",
     },
+
     {
-      title: "Workout Hours",
-      value: "18h",
+      title: "Workouts Done",
+      value: "18",
+      icon: <FaDumbbell />,
+      color: "text-red-500",
     },
+
     {
-      title: "Exercises Done",
-      value: "42",
+      title: "Heart Rate",
+      value: "92 BPM",
+      icon: <FaHeartbeat />,
+      color: "text-pink-500",
     },
+
     {
-      title: "Current Weight",
-      value: "72kg",
+      title: "Steps Today",
+      value: "8,421",
+      icon: <FaRunning />,
+      color: "text-green-500",
     },
   ];
 
-  const [completed, setCompleted] = useState(65);
-
-  const [history, setHistory] = useState([]);
-
-  useEffect(() => {
-    const savedHistory =
-      JSON.parse(localStorage.getItem("workout-history")) || [];
-
-    setHistory(savedHistory);
-  }, []);
-
-  const completeWorkout = () => {
-    if (completed < 100) {
-      const newProgress = completed + 5;
-
-      setCompleted(newProgress);
-
-      const newWorkout = {
-        date: new Date().toLocaleDateString(),
-        progress: `${newProgress}%`,
-      };
-
-      const updatedHistory = [
-        newWorkout,
-        ...history,
-      ];
-
-      setHistory(updatedHistory);
-
-      localStorage.setItem(
-        "workout-history",
-        JSON.stringify(updatedHistory)
-      );
-    }
-  };
-
   return (
-    <div>
 
-      {/* Heading */}
+    <div
+      className={
+        darkMode
+          ? "min-h-screen bg-black text-white transition-all duration-300"
+          : "min-h-screen bg-white text-black transition-all duration-300"
+      }
+    >
+
+      {/* HEADER */}
+
       <div className="mb-12">
 
-        <h1 className="text-5xl font-bold">
-          FITNESS <span className="text-red-500">DASHBOARD</span>
+        <h1 className="text-5xl font-bold mb-4">
+
+          FITNESS
+
+          <span className="text-red-500">
+
+            {" "}DASHBOARD
+
+          </span>
+
         </h1>
 
-        <p className="text-gray-400 mt-4">
-          Track your weekly progress and workouts.
+        <p className="text-lg opacity-70">
+
+          Track your fitness progress and performance.
+
         </p>
 
       </div>
 
-      {/* Stats */}
-      <div className="grid md:grid-cols-4 gap-8">
+      {/* STATS */}
+
+      <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
 
         {stats.map((item, index) => (
+
           <div
             key={index}
-            className="bg-zinc-900 border border-white/10 rounded-3xl p-8"
+            className={
+              darkMode
+                ? "bg-zinc-900 border border-white/10 rounded-3xl p-8"
+                : "bg-gray-100 border border-black/10 rounded-3xl p-8"
+            }
           >
 
-            <h2 className="text-gray-400 text-lg">
-              {item.title}
+            <div
+              className={`text-5xl mb-6 ${item.color}`}
+            >
+
+              {item.icon}
+
+            </div>
+
+            <h2 className="text-2xl font-bold mb-2">
+
+              {item.value}
+
             </h2>
 
-            <h1 className="text-4xl font-bold text-red-500 mt-4">
-              {item.value}
-            </h1>
+            <p className="opacity-70">
+
+              {item.title}
+
+            </p>
 
           </div>
         ))}
 
       </div>
 
-      {/* Progress Tracker */}
-      <div className="bg-zinc-900 border border-white/10 rounded-3xl p-8 mt-12">
+      {/* QUICK ACTIONS */}
 
-        <div className="flex items-center justify-between mb-6">
-
-          <h2 className="text-3xl font-bold">
-            Workout Progress
-          </h2>
-
-          <span className="text-red-500 text-2xl font-bold">
-            {completed}%
-          </span>
-
-        </div>
-
-        {/* Progress Bar */}
-        <div className="w-full bg-black rounded-full h-5 overflow-hidden">
-
-          <div
-            className="bg-red-500 h-5 transition-all duration-500"
-            style={{ width: `${completed}%` }}
-          ></div>
-
-        </div>
-
-        <button
-          onClick={completeWorkout}
-          className="mt-6 bg-red-500 hover:bg-red-600 px-6 py-3 rounded-lg font-semibold transition duration-300"
-        >
-          Complete Workout
-        </button>
-
-      </div>
-
-      {/* Workout History */}
-      <div className="bg-zinc-900 border border-white/10 rounded-3xl p-8 mt-12">
+      <div
+        className={
+          darkMode
+            ? "bg-zinc-900 border border-white/10 rounded-3xl p-10"
+            : "bg-gray-100 border border-black/10 rounded-3xl p-10"
+        }
+      >
 
         <h2 className="text-3xl font-bold mb-8">
-          Recent Workout Activity
+
+          Quick Actions
+
         </h2>
 
-        {history.length === 0 ? (
-          <p className="text-gray-400">
-            No workout history yet.
-          </p>
-        ) : (
-          <div className="space-y-4">
+        <div className="flex flex-wrap gap-6">
 
-            {history.map((item, index) => (
-              <div
-                key={index}
-                className="bg-black border border-white/10 rounded-xl p-4 flex justify-between"
-              >
+          <button className="bg-red-500 hover:bg-red-600 px-8 py-4 rounded-2xl font-bold text-white transition duration-300">
 
-                <span>
-                  Workout Completed
-                </span>
+            Start Workout
 
-                <span className="text-red-500">
-                  {item.progress} • {item.date}
-                </span>
+          </button>
 
-              </div>
-            ))}
+          <button className="bg-blue-500 hover:bg-blue-600 px-8 py-4 rounded-2xl font-bold text-white transition duration-300">
 
-          </div>
-        )}
+            View Exercises
 
-      </div>
+          </button>
 
-      {/* Chart */}
-      <div className="bg-zinc-900 border border-white/10 rounded-3xl p-8 mt-12">
+          <button className="bg-green-500 hover:bg-green-600 px-8 py-4 rounded-2xl font-bold text-white transition duration-300">
 
-        <h2 className="text-3xl font-bold mb-8">
-          Weekly Calories Burned
-        </h2>
+            Track Progress
 
-        <ResponsiveContainer width="100%" height={350}>
+          </button>
 
-          <LineChart data={data}>
-
-            <XAxis dataKey="day" stroke="#ffffff" />
-
-            <YAxis stroke="#ffffff" />
-
-            <Tooltip />
-
-            <Line
-              type="monotone"
-              dataKey="calories"
-              stroke="#ef4444"
-              strokeWidth={3}
-            />
-
-          </LineChart>
-
-        </ResponsiveContainer>
+        </div>
 
       </div>
 

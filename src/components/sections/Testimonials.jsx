@@ -1,56 +1,114 @@
-function Testimonials() {
-  const testimonials = [
+import { useTheme } from "../../context/ThemeContext";
+
+function WorkoutPlans() {
+
+  const { darkMode } = useTheme();
+
+  const plans = [
+
     {
-      name: "Rahul Sharma",
-      review:
-        "FitZone completely changed my lifestyle. I lost 12kg in just 3 months.",
+      title: "Beginner Plan",
+      duration: "4 Weeks",
+      desc: "Perfect for starting your fitness journey.",
     },
+
     {
-      name: "Priya Verma",
-      review:
-        "The trainers and workout plans are amazing. Highly recommended!",
+      title: "Muscle Gain",
+      duration: "8 Weeks",
+      desc: "Build muscle with structured workouts.",
     },
+
     {
-      name: "Aman Patel",
-      review:
-        "The best fitness platform for beginners and professionals.",
+      title: "Fat Loss",
+      duration: "6 Weeks",
+      desc: "Burn calories and lose body fat fast.",
     },
   ];
 
   return (
-    <section className="bg-black text-white py-20">
+
+    <section
+      className={
+        darkMode
+          ? "bg-black text-white py-20 transition-all duration-300"
+          : "bg-white text-black py-20 transition-all duration-300"
+      }
+    >
+
       <div className="max-w-7xl mx-auto px-6">
 
-        <div className="text-center mb-14">
-          <h2 className="text-4xl md:text-5xl font-bold">
-            SUCCESS <span className="text-red-500">STORIES</span>
-          </h2>
+        <div className="text-center mb-16">
 
-          <p className="text-gray-400 mt-4">
-            Hear from people who transformed their lives with FitZone.
+          <h1 className="text-5xl font-bold mb-4">
+
+            Workout
+
+            <span className="text-red-500">
+
+              {" "}Plans
+
+            </span>
+
+          </h1>
+
+          <p className="text-lg opacity-70">
+
+            Choose a plan that matches your fitness goals.
+
           </p>
+
         </div>
 
-        <div className="grid md:grid-cols-3 gap-8">
-          {testimonials.map((item, index) => (
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+          {plans.map((plan, index) => (
+
             <div
               key={index}
-              className="bg-zinc-900 border border-white/10 rounded-3xl p-8 hover:border-red-500 transition duration-300"
+              className={
+                darkMode
+                  ? "bg-zinc-900 border border-white/10 rounded-3xl p-8 hover:border-red-500 transition duration-300"
+                  : "bg-gray-100 border border-black/10 rounded-3xl p-8 hover:border-red-500 transition duration-300"
+              }
             >
-              <p className="text-gray-300 leading-relaxed">
-                "{item.review}"
+
+              <h2 className="text-3xl font-bold text-red-500 mb-4">
+
+                {plan.title}
+
+              </h2>
+
+              <p className="text-lg mb-3">
+
+                Duration:
+                {" "}
+                {plan.duration}
+
               </p>
 
-              <h3 className="mt-6 text-xl font-bold text-red-500">
-                {item.name}
-              </h3>
+              <p className="opacity-70 mb-8">
+
+                {plan.desc}
+
+              </p>
+
+              <button
+                className="bg-red-500 hover:bg-red-600 px-6 py-3 rounded-xl font-bold text-white transition duration-300"
+              >
+
+                Start Plan
+
+              </button>
+
             </div>
           ))}
+
         </div>
 
       </div>
+
     </section>
   );
 }
 
-export default Testimonials;
+export default WorkoutPlans;

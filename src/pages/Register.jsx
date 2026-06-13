@@ -1,31 +1,43 @@
-
 import { useState } from "react";
 
-import { Link, useNavigate } from "react-router-dom";
+import {
+  Link,
+  useNavigate
+} from "react-router-dom";
 
 import axios from "axios";
 
-import { HiEye, HiEyeOff } from "react-icons/hi";
+import {
+  HiEye,
+  HiEyeOff
+} from "react-icons/hi";
+
+import toast from "react-hot-toast";
+
+import { useTheme } from "../context/ThemeContext";
 
 function Register() {
 
   const navigate = useNavigate();
 
-  const [showPassword, setShowPassword] = useState(false);
+  const { darkMode } = useTheme();
 
-  const [message, setMessage] = useState("");
+  const [showPassword, setShowPassword] =
+    useState(false);
 
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    password: "",
-  });
+  const [formData, setFormData] =
+    useState({
+      name: "",
+      email: "",
+      password: "",
+    });
 
   const handleChange = (e) => {
 
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value,
+      [e.target.name]:
+        e.target.value,
     });
   };
 
@@ -41,7 +53,7 @@ function Register() {
 
       .then(() => {
 
-        setMessage(
+        toast.success(
           "Registration Successful"
         );
 
@@ -53,7 +65,7 @@ function Register() {
 
         console.log(error);
 
-        setMessage(
+        toast.error(
           "Registration Failed"
         );
 
@@ -62,24 +74,45 @@ function Register() {
 
   return (
 
-    <div className="bg-black min-h-screen flex items-center justify-center px-6">
+    <div
+      className={
+        darkMode
+          ? "min-h-screen bg-black text-white flex items-center justify-center px-6 transition-all duration-300"
+          : "min-h-screen bg-white text-black flex items-center justify-center px-6 transition-all duration-300"
+      }
+    >
 
-      <div className="bg-zinc-900 border border-white/10 rounded-3xl p-10 w-full max-w-md">
+      <div
+        className={
+          darkMode
+            ? "bg-zinc-900 border border-white/10 rounded-3xl p-10 w-full max-w-md"
+            : "bg-gray-100 border border-black/10 rounded-3xl p-10 w-full max-w-md"
+        }
+      >
 
-        <h1 className="text-4xl font-bold text-white text-center">
+        <h1 className="text-4xl font-bold text-center">
+
           CREATE ACCOUNT
+
         </h1>
 
-        <p className="text-gray-400 text-center mt-3">
+        <p className="text-center mt-3 opacity-70">
+
           Start your fitness journey today
+
         </p>
 
-        <form onSubmit={handleSubmit} className="mt-10">
+        <form
+          onSubmit={handleSubmit}
+          className="mt-10"
+        >
 
           <div className="mb-6">
 
-            <label className="text-gray-300 block mb-2">
+            <label className="block mb-2">
+
               Full Name
+
             </label>
 
             <input
@@ -88,15 +121,21 @@ function Register() {
               placeholder="Enter full name"
               value={formData.name}
               onChange={handleChange}
-              className="w-full bg-black border border-white/10 rounded-lg px-4 py-3 text-white outline-none focus:border-red-500"
+              className={
+                darkMode
+                  ? "w-full bg-black border border-white/10 rounded-lg px-4 py-3 outline-none focus:border-red-500"
+                  : "w-full bg-white border border-black/10 rounded-lg px-4 py-3 outline-none focus:border-red-500"
+              }
             />
 
           </div>
 
           <div className="mb-6">
 
-            <label className="text-gray-300 block mb-2">
+            <label className="block mb-2">
+
               Email
+
             </label>
 
             <input
@@ -105,15 +144,21 @@ function Register() {
               placeholder="Enter email"
               value={formData.email}
               onChange={handleChange}
-              className="w-full bg-black border border-white/10 rounded-lg px-4 py-3 text-white outline-none focus:border-red-500"
+              className={
+                darkMode
+                  ? "w-full bg-black border border-white/10 rounded-lg px-4 py-3 outline-none focus:border-red-500"
+                  : "w-full bg-white border border-black/10 rounded-lg px-4 py-3 outline-none focus:border-red-500"
+              }
             />
 
           </div>
 
           <div className="mb-6">
 
-            <label className="text-gray-300 block mb-2">
+            <label className="block mb-2">
+
               Password
+
             </label>
 
             <div className="relative">
@@ -128,7 +173,11 @@ function Register() {
                 placeholder="Enter password"
                 value={formData.password}
                 onChange={handleChange}
-                className="w-full bg-black border border-white/10 rounded-lg px-4 py-3 text-white outline-none focus:border-red-500"
+                className={
+                  darkMode
+                    ? "w-full bg-black border border-white/10 rounded-lg px-4 py-3 outline-none focus:border-red-500"
+                    : "w-full bg-white border border-black/10 rounded-lg px-4 py-3 outline-none focus:border-red-500"
+                }
               />
 
               <button
@@ -136,7 +185,7 @@ function Register() {
                 onClick={() =>
                   setShowPassword(!showPassword)
                 }
-                className="absolute right-4 top-4 text-gray-400"
+                className="absolute right-4 top-4 opacity-70"
               >
 
                 {
@@ -162,11 +211,7 @@ function Register() {
 
         </form>
 
-        <p className="text-center text-gray-400 mt-4">
-          {message}
-        </p>
-
-        <p className="text-gray-400 text-center mt-6">
+        <p className="text-center mt-6 opacity-70">
 
           Already have an account?{" "}
 
@@ -188,4 +233,3 @@ function Register() {
 }
 
 export default Register;
-

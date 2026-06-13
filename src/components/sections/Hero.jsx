@@ -1,61 +1,98 @@
-import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
+
+import { useTheme } from "../../context/ThemeContext";
 
 function Hero() {
+
+  const { darkMode } = useTheme();
+
   return (
-    <section className="h-[90vh] bg-black text-white flex items-center overflow-hidden">
-      <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-10 items-center">
 
-        {/* Left Content */}
-        <motion.div
-          initial={{ opacity: 0, x: -80 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 1 }}
-        >
+    <section
+      className={
+        darkMode
+          ? "bg-black text-white min-h-screen flex items-center transition-all duration-300"
+          : "bg-white text-black min-h-screen flex items-center transition-all duration-300"
+      }
+    >
 
-          <p className="text-red-500 font-semibold mb-4 tracking-widest">
-            TRAIN HARDER
+      <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-16 items-center">
+
+        {/* LEFT CONTENT */}
+
+        <div>
+
+          <p className="text-red-500 font-bold text-lg mb-4">
+
+            BUILD YOUR DREAM BODY
+
           </p>
 
-          <h1 className="text-5xl md:text-7xl font-bold leading-tight">
-            BUILD YOUR <span className="text-red-500">DREAM</span> PHYSIQUE
+          <h1 className="text-6xl md:text-7xl font-extrabold leading-tight mb-6">
+
+            Train Hard
+
+            <br />
+
+            Stay
+
+            <span className="text-red-500">
+
+              {" "}Fit
+
+            </span>
+
           </h1>
 
-          <p className="text-gray-400 mt-6 text-lg">
-            Transform your body with professional workout plans,
-            expert guidance, and powerful fitness tracking.
+          <p className="text-lg opacity-70 leading-8 mb-10">
+
+            Achieve your fitness goals with smart workouts,
+            personalized training plans, and powerful progress tracking.
+
           </p>
 
-          <div className="mt-8 flex gap-4">
+          <div className="flex gap-6 flex-wrap">
 
-            <button className="bg-red-500 hover:bg-red-600 px-6 py-3 rounded-lg font-semibold transition duration-300">
-              Start Now
-            </button>
+            <Link
+              to="/exercises"
+              className="bg-red-500 hover:bg-red-600 px-8 py-4 rounded-2xl font-bold text-white transition duration-300"
+            >
 
-            <button className="border border-white hover:border-red-500 hover:text-red-500 px-6 py-3 rounded-lg font-semibold transition duration-300">
-              Explore Plans
-            </button>
+              Explore Exercises
+
+            </Link>
+
+            <Link
+              to="/register"
+              className={
+                darkMode
+                  ? "border border-white px-8 py-4 rounded-2xl font-bold hover:border-red-500 transition duration-300"
+                  : "border border-black px-8 py-4 rounded-2xl font-bold hover:border-red-500 transition duration-300"
+              }
+            >
+
+              Join Now
+
+            </Link>
 
           </div>
 
-        </motion.div>
+        </div>
 
-        {/* Right Image */}
-        <motion.div
-          initial={{ opacity: 0, x: 80 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 1 }}
-          className="flex justify-center"
-        >
+        {/* RIGHT IMAGE */}
+
+        <div className="flex justify-center">
 
           <img
             src="https://images.unsplash.com/photo-1517836357463-d25dfeac3438"
             alt="Fitness"
-            className="rounded-3xl shadow-2xl w-full max-w-md object-cover hover:scale-105 transition duration-500"
+            className="rounded-3xl shadow-2xl w-full max-w-lg object-cover"
           />
 
-        </motion.div>
+        </div>
 
       </div>
+
     </section>
   );
 }

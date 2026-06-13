@@ -1,18 +1,26 @@
-
 import { Navigate } from "react-router-dom";
 
-function ProtectedRoute({ children }) {
+import toast from "react-hot-toast";
+
+function ProtectedRoute({
+  children
+}) {
 
   const token =
     localStorage.getItem("token");
 
   if (!token) {
 
-    return <Navigate to="/login" />;
+    toast.error(
+      "Please login first"
+    );
+
+    return (
+      <Navigate to="/login" />
+    );
   }
 
   return children;
 }
 
 export default ProtectedRoute;
-

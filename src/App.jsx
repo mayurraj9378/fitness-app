@@ -1,5 +1,7 @@
-
-import { Routes, Route } from "react-router-dom";
+import {
+  Routes,
+  Route
+} from "react-router-dom";
 
 import Home from "./pages/Home";
 import Exercises from "./pages/Exercises";
@@ -12,12 +14,15 @@ import DashboardLayout from "./components/layout/DashboardLayout";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import SavedWorkouts from "./pages/SavedWorkouts";
 import Profile from "./pages/Profile";
+import Progress from "./pages/Progress";
 
 function App() {
 
   return (
 
     <Routes>
+
+      {/* PUBLIC ROUTES */}
 
       <Route
         path="/"
@@ -34,35 +39,9 @@ function App() {
         element={<Register />}
       />
 
-      <Route
-        path="/exercise/:id"
-        element={
-          <ProtectedRoute>
-            <ExerciseDetails />
-          </ProtectedRoute>
-        }
-      />
+      {/* PROTECTED ROUTES */}
 
       <Route
-        path="/workouts"
-        element={
-          <ProtectedRoute>
-            <Workout />
-          </ProtectedRoute>
-        }
-      />
-
-      <Route
-        path="/exercises"
-        element={
-          <ProtectedRoute>
-            <Exercises />
-          </ProtectedRoute>
-        }
-      />
-
-      <Route
-        path="/dashboard"
         element={
           <ProtectedRoute>
             <DashboardLayout />
@@ -71,18 +50,38 @@ function App() {
       >
 
         <Route
-          index
+          path="/dashboard"
           element={<Dashboard />}
         />
 
         <Route
-          path="saved"
+          path="/dashboard/saved"
           element={<SavedWorkouts />}
         />
 
         <Route
-          path="profile"
+          path="/dashboard/profile"
           element={<Profile />}
+        />
+
+        <Route
+          path="/exercises"
+          element={<Exercises />}
+        />
+
+        <Route
+          path="/exercise/:id"
+          element={<ExerciseDetails />}
+        />
+
+        <Route
+          path="/workouts"
+          element={<Workout />}
+        />
+
+        <Route
+          path="/progress"
+          element={<Progress />}
         />
 
       </Route>
@@ -92,4 +91,3 @@ function App() {
 }
 
 export default App;
-

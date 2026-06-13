@@ -1,10 +1,17 @@
-
 import { useEffect, useState } from "react";
+
 import axios from "axios";
+
+import toast from "react-hot-toast";
+
+import { useTheme } from "../context/ThemeContext";
 
 function SavedWorkouts() {
 
-  const [workouts, setWorkouts] = useState([]);
+  const { darkMode } = useTheme();
+
+  const [workouts, setWorkouts] =
+    useState([]);
 
   const fetchWorkouts = async () => {
 
@@ -18,7 +25,8 @@ function SavedWorkouts() {
           "http://localhost:8080/workouts",
           {
             headers: {
-              Authorization: `Bearer ${token}`,
+              Authorization:
+                `Bearer ${token}`,
             },
           }
         );
@@ -29,7 +37,9 @@ function SavedWorkouts() {
 
       console.log(error);
 
-      alert("Failed to load workouts");
+      toast.error(
+        "Failed to load workouts"
+      );
     }
   };
 
@@ -39,51 +49,156 @@ function SavedWorkouts() {
 
   }, []);
 
-  const handleDeleteWorkout = async (id) => {
+  const handleDeleteWorkout =
+    async (id) => {
 
-    try {
+      try {
 
-      const token =
-        localStorage.getItem("token");
+        const token =
+          localStorage.getItem("token");
 
-      await axios.delete(
-        `http://localhost:8080/workouts/${id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+        await axios.delete(
+          `http://localhost:8080/workouts/${id}`,
+          {
+            headers: {
+              Authorization:
+                `Bearer ${token}`,
+            },
+          }
+        );
 
-      fetchWorkouts();
+        fetchWorkouts();
 
-      alert("Workout Deleted!");
+        toast.success(
+          "Workout Deleted!"
+        );
 
-    } catch (error) {
+      } catch (error) {
 
-      console.log(error);
+        console.log(error);
 
-      alert("Failed to delete workout");
-    }
-  };
+        toast.error(
+          "Failed to delete workout"
+        );
+      }
+    };
 
   return (
 
-    <div className="text-white">
+    <div
+      className={
+        darkMode
+          ? "min-h-screen bg-black text-white transition-all duration-300"
+          : "min-h-screen bg-white text-black transition-all duration-300"
+      }
+    >
 
       <h1 className="text-5xl font-bold mb-12">
 
-        SAVED <span className="text-red-500">WORKOUTS</span>
+        SAVED
+
+        <span className="text-red-500">
+
+          {" "}WORKOUTS
+
+        </span>
 
       </h1>
 
+      {/* STATS */}
+
+      <div className="grid md:grid-cols-3 gap-6 mb-10">
+
+        <div
+          className={
+            darkMode
+              ? "bg-zinc-900 border border-white/10 rounded-3xl p-8"
+              : "bg-gray-100 border border-black/10 rounded-3xl p-8"
+          }
+        >
+
+          <h2 className="text-4xl font-bold text-red-500 mb-2">
+
+            {workouts.length}
+
+          </h2>
+
+          <p className="opacity-70">
+
+            Saved Workouts
+
+          </p>
+
+        </div>
+
+        <div
+          className={
+            darkMode
+              ? "bg-zinc-900 border border-white/10 rounded-3xl p-8"
+              : "bg-gray-100 border border-black/10 rounded-3xl p-8"
+          }
+        >
+
+          <h2 className="text-4xl font-bold text-blue-500 mb-2">
+
+            Active
+
+          </h2>
+
+          <p className="opacity-70">
+
+            Workout Tracking
+
+          </p>
+
+        </div>
+
+        <div
+          className={
+            darkMode
+              ? "bg-zinc-900 border border-white/10 rounded-3xl p-8"
+              : "bg-gray-100 border border-black/10 rounded-3xl p-8"
+          }
+        >
+
+          <h2 className="text-4xl font-bold text-green-500 mb-2">
+
+            FitZone
+
+          </h2>
+
+          <p className="opacity-70">
+
+            Routine Manager
+
+          </p>
+
+        </div>
+
+      </div>
+
+      {/* EMPTY STATE */}
+
       {workouts.length === 0 ? (
 
-        <div className="bg-zinc-900 p-8 rounded-3xl border border-white/10">
+        <div
+          className={
+            darkMode
+              ? "bg-zinc-900 p-12 rounded-3xl border border-white/10 text-center"
+              : "bg-gray-100 p-12 rounded-3xl border border-black/10 text-center"
+          }
+        >
 
-          <p className="text-gray-400 text-lg">
+          <h2 className="text-3xl font-bold mb-4">
 
-            No workouts saved yet.
+            No Workouts Saved
+
+          </h2>
+
+          <p className="opacity-70 text-lg">
+
+            Save workouts from the exercise page
+            to build your fitness routine.
 
           </p>
 
@@ -91,14 +206,34 @@ function SavedWorkouts() {
 
       ) : (
 
-        <div className="grid md:grid-cols-2 gap-6">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
 
           {workouts.map((workout) => (
 
             <div
               key={workout.id}
-              className="bg-zinc-900 border border-white/10 rounded-3xl p-8"
+              className={
+                darkMode
+                  ? "bg-zinc-900 border border-white/10 rounded-3xl p-8 hover:border-red-500 hover:shadow-2xl hover:shadow-red-500/20 hover:scale-105 transition-all duration-500"
+                  : "bg-gray-100 border border-black/10 rounded-3xl p-8 hover:border-red-500 hover:shadow-2xl hover:scale-105 transition-all duration-500"
+              }
             >
+
+              <div className="flex justify-between items-center mb-6">
+
+                <span className="bg-red-500 px-4 py-2 rounded-xl text-sm font-bold text-white">
+
+                  {workout.category}
+
+                </span>
+
+                <span className="bg-green-500 px-4 py-2 rounded-xl text-sm font-bold text-white">
+
+                  Active
+
+                </span>
+
+              </div>
 
               <h2 className="text-3xl font-bold text-red-500 mb-4">
 
@@ -106,19 +241,24 @@ function SavedWorkouts() {
 
               </h2>
 
-              <p className="text-gray-300 text-lg mb-6">
+              <p className="opacity-70 mb-8 leading-7">
 
-                Category: {workout.category}
+                Track your workout routine and
+                stay consistent with your fitness journey.
 
               </p>
 
               <button
                 onClick={() =>
-                  handleDeleteWorkout(workout.id)
+                  handleDeleteWorkout(
+                    workout.id
+                  )
                 }
-                className="bg-red-500 hover:bg-red-600 px-6 py-3 rounded-xl font-bold transition duration-300 hover:scale-105"
+                className="bg-red-500 hover:bg-red-600 px-6 py-3 rounded-xl font-bold transition duration-300 hover:scale-105 text-white"
               >
+
                 Delete Workout
+
               </button>
 
             </div>
@@ -132,4 +272,3 @@ function SavedWorkouts() {
 }
 
 export default SavedWorkouts;
-
