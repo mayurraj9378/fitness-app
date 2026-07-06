@@ -1,8 +1,12 @@
+import { useEffect, useState } from "react";
+import axios from "axios";
+import toast from "react-hot-toast";
+
 import {
   FaDumbbell,
-  FaFire,
-  FaHeartbeat,
-  FaRunning
+  FaListUl,
+  FaWeight,
+  FaChartLine
 } from "react-icons/fa";
 
 import { useTheme } from "../context/ThemeContext";
@@ -11,34 +15,114 @@ function Dashboard() {
 
   const { darkMode } = useTheme();
 
+  const [workoutCount, setWorkoutCount] = useState(0);
+  const [exerciseCount, setExerciseCount] = useState(0);
+  const [progress, setProgress] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const fetchDashboardData = async () => {
+
+    try {
+
+      const token =
+        localStorage.getItem("token");
+
+      const [workoutsRes, exercisesRes, progressRes] =
+        await Promise.all([
+          axios.get(
+            "http://localhost:8080/workouts",
+            {
+              headers: {
+                Authorization: `Bearer ${token}`
+              }
+            }
+          ),
+          axios.get(
+            "http://localhost:8080/exercises"
+          ),
+          axios.get(
+            "http://localhost:8080/progress",
+            {
+              headers: {
+                Authorization: `Bearer ${token}`
+              }
+            }
+          )
+        ]);
+
+      setWorkoutCount(workoutsRes.data.length);
+      setExerciseCount(exercisesRes.data.length);
+      setProgress(progressRes.data);
+
+    } catch (error) {
+
+      console.log(error);
+
+      toast.error("Failed to load dashboard stats");
+
+    } finally {
+
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+
+    fetchDashboardData();
+
+  }, []);
+
+  const latestWeight =
+    progress.length > 0
+      ? progress[progress.length - 1].weight
+      : null;
+
+  const firstWeight =
+    progress.length > 0
+      ? progress[0].weight
+      : null;
+
+  const weightChange =
+    latestWeight !== null && firstWeight !== null
+      ? (firstWeight - latestWeight).toFixed(1)
+      : null;
+
   const stats = [
 
     {
-      title: "Calories Burned",
-      value: "1240",
-      icon: <FaFire />,
-      color: "text-orange-500",
-    },
-
-    {
-      title: "Workouts Done",
-      value: "18",
+      title: "Workouts Saved",
+      value: loading ? "..." : workoutCount,
       icon: <FaDumbbell />,
       color: "text-red-500",
     },
 
     {
-      title: "Heart Rate",
-      value: "92 BPM",
-      icon: <FaHeartbeat />,
-      color: "text-pink-500",
+      title: "Exercises in Library",
+      value: loading ? "..." : exerciseCount,
+      icon: <FaListUl />,
+      color: "text-blue-500",
     },
 
     {
-      title: "Steps Today",
-      value: "8,421",
-      icon: <FaRunning />,
+      title: "Current Weight",
+      value: loading
+        ? "..."
+        : latestWeight !== null
+          ? `${latestWeight} kg`
+          : "No data yet",
+      icon: <FaWeight />,
       color: "text-green-500",
+    },
+
+    {
+      title: "Weight Change",
+      value: loading
+        ? "..."
+        : weightChange !== null
+          ? `${weightChange > 0 ? "-" : "+"}${Math.abs(weightChange)} kg`
+          : "No data yet",
+      icon: <FaChartLine />,
+      color: "text-pink-500",
     },
   ];
 
