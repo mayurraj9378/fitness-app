@@ -13,6 +13,16 @@ function SavedWorkouts() {
   const [workouts, setWorkouts] =
     useState([]);
 
+  const totalCalories = workouts.reduce(
+    (sum, w) => sum + (w.caloriesBurned || 0),
+    0
+  );
+
+  const totalMinutes = workouts.reduce(
+    (sum, w) => sum + (w.durationMinutes || 0),
+    0
+  );
+
   const fetchWorkouts = async () => {
 
     try {
@@ -141,13 +151,13 @@ function SavedWorkouts() {
 
           <h2 className="text-4xl font-bold text-blue-500 mb-2">
 
-            Active
+            {totalCalories}
 
           </h2>
 
           <p className="opacity-70">
 
-            Workout Tracking
+            Total Calories Burned
 
           </p>
 
@@ -163,13 +173,13 @@ function SavedWorkouts() {
 
           <h2 className="text-4xl font-bold text-green-500 mb-2">
 
-            FitZone
+            {totalMinutes}
 
           </h2>
 
           <p className="opacity-70">
 
-            Routine Manager
+            Total Minutes Trained
 
           </p>
 
@@ -241,10 +251,17 @@ function SavedWorkouts() {
 
               </h2>
 
+              <p className="opacity-70 mb-2">
+
+                {workout.date || "Date not recorded"}
+
+              </p>
+
               <p className="opacity-70 mb-8 leading-7">
 
-                Track your workout routine and
-                stay consistent with your fitness journey.
+                {workout.durationMinutes || 0} min
+                {" "}&middot;{" "}
+                {workout.caloriesBurned || 0} cal
 
               </p>
 

@@ -4,9 +4,9 @@ import toast from "react-hot-toast";
 
 import {
   FaDumbbell,
-  FaListUl,
+  FaFire,
   FaWeight,
-  FaChartLine
+  FaCalendarWeek
 } from "react-icons/fa";
 
 import { useTheme } from "../context/ThemeContext";
@@ -15,8 +15,7 @@ function Dashboard() {
 
   const { darkMode } = useTheme();
 
-  const [workoutCount, setWorkoutCount] = useState(0);
-  const [exerciseCount, setExerciseCount] = useState(0);
+  const [workouts, setWorkouts] = useState([]);
   const [progress, setProgress] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -27,7 +26,7 @@ function Dashboard() {
       const token =
         localStorage.getItem("token");
 
-      const [workoutsRes, exercisesRes, progressRes] =
+      const [workoutsRes, progressRes] =
         await Promise.all([
           axios.get(
             "http://localhost:8080/workouts",
@@ -36,9 +35,6 @@ function Dashboard() {
                 Authorization: `Bearer ${token}`
               }
             }
-          ),
-          axios.get(
-            "http://localhost:8080/exercises"
           ),
           axios.get(
             "http://localhost:8080/progress",
@@ -50,8 +46,7 @@ function Dashboard() {
           )
         ]);
 
-      setWorkoutCount(workoutsRes.data.length);
-      setExerciseCount(exercisesRes.data.length);
+      setWorkouts(workoutsRes.data);
       setProgress(progressRes.data);
 
     } catch (error) {
@@ -77,30 +72,46 @@ function Dashboard() {
       ? progress[progress.length - 1].weight
       : null;
 
-  const firstWeight =
-    progress.length > 0
-      ? progress[0].weight
-      : null;
+  const totalCalories = workouts.reduce(
+    (sum, w) => sum + (w.caloriesBurned || 0),
+    0
+  );
 
-  const weightChange =
-    latestWeight !== null && firstWeight !== null
-      ? (firstWeight - latestWeight).toFixed(1)
-      : null;
+  // Workouts logged in the last 7 days.
+  // Dates are stored as toLocaleDateString() strings, so this is a
+  // best-effort parse — fine for recently-saved workouts, but any
+  // older workouts saved before the date field existed will show
+  // "Date not recorded" and won't count here.
+  const oneWeekAgo = new Date();
+  oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+
+  const workoutsThisWeek = workouts.filter((w) => {
+    if (!w.date) return false;
+    const parsed = new Date(w.date);
+    return !isNaN(parsed) && parsed >= oneWeekAgo;
+  }).length;
 
   const stats = [
 
     {
       title: "Workouts Saved",
-      value: loading ? "..." : workoutCount,
+      value: loading ? "..." : workouts.length,
       icon: <FaDumbbell />,
       color: "text-red-500",
     },
 
     {
-      title: "Exercises in Library",
-      value: loading ? "..." : exerciseCount,
-      icon: <FaListUl />,
+      title: "This Week",
+      value: loading ? "..." : workoutsThisWeek,
+      icon: <FaCalendarWeek />,
       color: "text-blue-500",
+    },
+
+    {
+      title: "Calories Burned",
+      value: loading ? "..." : totalCalories,
+      icon: <FaFire />,
+      color: "text-orange-500",
     },
 
     {
@@ -112,17 +123,6 @@ function Dashboard() {
           : "No data yet",
       icon: <FaWeight />,
       color: "text-green-500",
-    },
-
-    {
-      title: "Weight Change",
-      value: loading
-        ? "..."
-        : weightChange !== null
-          ? `${weightChange > 0 ? "-" : "+"}${Math.abs(weightChange)} kg`
-          : "No data yet",
-      icon: <FaChartLine />,
-      color: "text-pink-500",
     },
   ];
 
