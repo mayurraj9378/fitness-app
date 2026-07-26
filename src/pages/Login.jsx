@@ -1,6 +1,7 @@
 import { useState } from "react";
 
 import axios from "axios";
+import API_BASE from "../config/api";
 
 import {
   useNavigate,
@@ -22,14 +23,11 @@ function Login() {
 
   const { darkMode } = useTheme();
 
-  const [email, setEmail] =
-    useState("");
+  const [email, setEmail] = useState("");
 
-  const [password, setPassword] =
-    useState("");
+  const [password, setPassword] = useState("");
 
-  const [showPassword, setShowPassword] =
-    useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleLogin = (e) => {
 
@@ -39,10 +37,10 @@ function Login() {
       email,
       password
     };
-
+    
     axios
       .post(
-        "http://localhost:8080/auth/login",
+        `${API_BASE}/auth/login`,
         loginData
       )
 
