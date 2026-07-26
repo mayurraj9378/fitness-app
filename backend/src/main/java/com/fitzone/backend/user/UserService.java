@@ -1,4 +1,3 @@
-
 package com.fitzone.backend.user;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -12,22 +11,36 @@ public class UserService {
     private final BCryptPasswordEncoder passwordEncoder =
             new BCryptPasswordEncoder();
 
-    public UserService(
-            UserRepository userRepository
-    ) {
+    public UserService(UserRepository userRepository) {
 
         this.userRepository = userRepository;
     }
 
-    public User registerUser(
-            User user
-    ) {
+    public User registerUser(User user) {
 
-        if (user.getPassword().length() < 8) {
+        // Name Validation
+        if (user.getName() == null || user.getName().trim().isEmpty()) {
+            throw new RuntimeException("Name is required");
+        }
 
-            throw new RuntimeException(
-                    "Password must be at least 8 characters"
-            );
+        // Email Validation
+        if (user.getEmail() == null || user.getEmail().trim().isEmpty()) {
+            throw new RuntimeException("Email is required");
+        }
+
+        // Basic Email Format Validation
+        if (!user.getEmail().matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$")) {
+            throw new RuntimeException("Invalid email format");
+        }
+
+        // Duplicate Email Check
+        if (userRepository.existsByEmail(user.getEmail())) {
+            throw new RuntimeException("Email is already registered");
+        }
+
+        // Password Validation
+        if (user.getPassword() == null || user.getPassword().length() < 8) {
+            throw new RuntimeException("Password must be at least 8 characters");
         }
 
         boolean hasUppercase =
@@ -39,35 +52,38 @@ public class UserService {
         boolean hasSpecial =
                 user.getPassword().matches(".*[!@#$%^&*()].*");
 
-        if (
-                !hasUppercase ||
-                !hasNumber ||
-                !hasSpecial
-        ) {
+        if (!hasUppercase || !hasNumber || !hasSpecial) {
 
             throw new RuntimeException(
                     "Password must contain uppercase, number and special character"
             );
         }
 
-        String encryptedPassword =
-                passwordEncoder.encode(user.getPassword());
-
-        user.setPassword(encryptedPassword);
+        // Encrypt Password
+        user.setPassword(
+                passwordEncoder.encode(user.getPassword())
+        );
 
         return userRepository.save(user);
     }
 
-    public String loginUser(
-            User loginRequest
-    ) {
+    public String loginUser(User loginRequest) {
 
-        User user =
-                userRepository
-                        .findByEmail(loginRequest.getEmail())
-                        .orElseThrow(() ->
-                                new RuntimeException("User not found")
-                        );
+        if (loginRequest.getEmail() == null ||
+                loginRequest.getPassword() == null) {
+
+            throw new RuntimeException(
+                    "Email and Password are required"
+            );
+        }
+
+        User user = userRepository
+                .findByEmail(loginRequest.getEmail())
+                .orElseThrow(() ->
+                        new RuntimeException(
+                                "Invalid email or password"
+                        )
+                );
 
         boolean passwordMatches =
                 passwordEncoder.matches(
@@ -78,7 +94,7 @@ public class UserService {
         if (!passwordMatches) {
 
             throw new RuntimeException(
-                    "Invalid password"
+                    "Invalid email or password"
             );
         }
 
@@ -87,9 +103,7 @@ public class UserService {
         );
     }
 
-    public User getCurrentUser(
-            String token
-    ) {
+    public User getCurrentUser(String token) {
 
         String email =
                 JwtUtil.extractEmail(token);
@@ -101,4 +115,3 @@ public class UserService {
                 );
     }
 }
-
