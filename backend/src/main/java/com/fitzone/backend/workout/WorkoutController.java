@@ -1,4 +1,3 @@
-
 package com.fitzone.backend.workout;
 
 import org.springframework.web.bind.annotation.*;
@@ -6,7 +5,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@CrossOrigin("*")
 @RequestMapping("/workouts")
 public class WorkoutController {
 
@@ -61,4 +59,3 @@ public class WorkoutController {
         workoutService.deleteWorkout(id);
     }
 }
-

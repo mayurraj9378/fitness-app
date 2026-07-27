@@ -1,10 +1,8 @@
-
 package com.fitzone.backend.user;
 
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@CrossOrigin("*")
 @RequestMapping("/auth")
 public class UserController {
 
@@ -55,4 +53,3 @@ public class UserController {
         );
     }
 }
-
