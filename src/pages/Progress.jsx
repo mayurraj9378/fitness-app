@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import API_BASE from "../config/api";
 import toast from "react-hot-toast";
 import { useTheme } from "../context/ThemeContext";
 
@@ -20,7 +21,7 @@ function Progress() {
 
       const response =
         await axios.get(
-          "http://localhost:8080/progress",
+          `${API_BASE}/progress`,
           {
             headers: {
               Authorization: `Bearer ${token}`
@@ -52,7 +53,7 @@ function Progress() {
         localStorage.getItem("token");
 
       await axios.post(
-        "http://localhost:8080/progress",
+        `${API_BASE}/progress`,
         {
           weight: Number(weight),
           date: new Date()
@@ -88,7 +89,7 @@ function Progress() {
     try {
 
       await axios.delete(
-        `http://localhost:8080/progress/${id}`
+        `${API_BASE}/progress/${id}`
       );
 
       toast.success(

@@ -13,46 +13,43 @@ import java.util.List;
 @Configuration
 public class SecurityConfig {
 
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        @Bean
+        public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
-        http
-                .csrf(csrf -> csrf.disable())
-                .cors(cors -> {})
-                .authorizeHttpRequests(auth -> auth
-                        .anyRequest().permitAll()
-                );
+                http
+                                .csrf(csrf -> csrf.disable())
+                                .cors(cors -> {
+                                })
+                                .authorizeHttpRequests(auth -> auth
+                                                .anyRequest().permitAll());
 
-        return http.build();
-    }
+                return http.build();
+        }
 
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
+        @Bean
+        public CorsConfigurationSource corsConfigurationSource() {
 
-        CorsConfiguration configuration = new CorsConfiguration();
+                CorsConfiguration configuration = new CorsConfiguration();
 
-        configuration.setAllowedOrigins(List.of(
-                "http://localhost:5173",
-                "https://fitz-one8.netlify.app"
-        ));
+                configuration.setAllowedOriginPatterns(List.of(
+                                "http://localhost:5173",
+                                "https://*.netlify.app"));
 
-        configuration.setAllowedMethods(List.of(
-                "GET",
-                "POST",
-                "PUT",
-                "DELETE",
-                "OPTIONS"
-        ));
+                configuration.setAllowedMethods(List.of(
+                                "GET",
+                                "POST",
+                                "PUT",
+                                "DELETE",
+                                "OPTIONS"));
 
-        configuration.setAllowedHeaders(List.of("*"));
+                configuration.setAllowedHeaders(List.of("*"));
 
-        configuration.setAllowCredentials(true);
+                configuration.setAllowCredentials(true);
 
-        UrlBasedCorsConfigurationSource source =
-                new UrlBasedCorsConfigurationSource();
+                UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 
-        source.registerCorsConfiguration("/**", configuration);
+                source.registerCorsConfiguration("/**", configuration);
 
-        return source;
-    }
+                return source;
+        }
 }

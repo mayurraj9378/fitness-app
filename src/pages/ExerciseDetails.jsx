@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { useTheme } from "../context/ThemeContext";
+import API_BASE from "../config/api";
 
 // Convert any YouTube URL to Embed URL
 const getEmbedUrl = (url) => {
@@ -56,7 +57,7 @@ function ExerciseDetails() {
       setLoading(true);
 
       const response = await axios.get(
-        `http://localhost:8080/exercises/${id}`
+        `${API_BASE}/exercises/${id}`
       );
 
       console.log("Exercise Data:", response.data);
@@ -77,7 +78,7 @@ function ExerciseDetails() {
       const token = localStorage.getItem("token");
 
       await axios.post(
-        "http://localhost:8080/workouts",
+        `${API_BASE}/workouts`,
         {
           workoutName: exercise?.name || "",
           category: exercise?.category || "",

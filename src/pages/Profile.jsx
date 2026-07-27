@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 
 import axios from "axios";
+import API_BASE from "../config/api";
 
 import toast from "react-hot-toast";
 
@@ -38,7 +39,7 @@ function Profile() {
 
         const response =
           await axios.get(
-            "http://localhost:8080/auth/me",
+            `${API_BASE}/auth/me`,
             {
               headers: {
                 Authorization:
@@ -86,7 +87,7 @@ function Profile() {
 
           const response =
             await axios.get(
-              "http://localhost:8080/workouts",
+              `${API_BASE}/workouts`,
               {
                 headers: {
                   Authorization:

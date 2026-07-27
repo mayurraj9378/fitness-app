@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import API_BASE from "../config/api";
 import toast from "react-hot-toast";
 
 import {
@@ -22,7 +23,7 @@ function Workout() {
       const token = localStorage.getItem("token");
 
       const response = await axios.get(
-        "http://localhost:8080/workouts",
+        `${API_BASE}/workouts`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -52,7 +53,7 @@ function Workout() {
 
     try {
       await axios.delete(
-        `http://localhost:8080/workouts/${id}`
+        `${API_BASE}/workouts/${id}`
       );
 
       toast.success("Workout Deleted");

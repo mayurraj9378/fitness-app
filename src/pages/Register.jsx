@@ -6,6 +6,7 @@ import {
 } from "react-router-dom";
 
 import axios from "axios";
+import API_BASE from "../config/api";
 
 import {
   HiEye,
@@ -47,7 +48,7 @@ function Register() {
 
     axios
       .post(
-        "http://localhost:8080/auth/register",
+        `${API_BASE}/auth/register`,
         formData
       )
 

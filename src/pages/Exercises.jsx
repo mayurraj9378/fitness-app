@@ -10,6 +10,7 @@ import {
 import toast from "react-hot-toast";
 
 import { useTheme } from "../context/ThemeContext";
+import API_BASE from "../config/api";
 
 function Exercises() {
 
@@ -62,7 +63,7 @@ function Exercises() {
 
       const response =
         await axios.get(
-          "http://localhost:8080/exercises"
+          `${API_BASE}/exercises`
         );
 
       setExercises(response.data);
@@ -117,7 +118,7 @@ function Exercises() {
         if (editingId) {
 
           await axios.put(
-            `http://localhost:8080/exercises/${editingId}`,
+            `${API_BASE}/exercises/${editingId}`,
             exerciseData
           );
 
@@ -128,7 +129,7 @@ function Exercises() {
         } else {
 
           await axios.post(
-            "http://localhost:8080/exercises",
+            `${API_BASE}/exercises`,
             exerciseData
           );
 
@@ -181,7 +182,7 @@ function Exercises() {
       try {
 
         await axios.delete(
-          `http://localhost:8080/exercises/${id}`
+          `${API_BASE}/exercises/${id}`
         );
 
         toast.success(
