@@ -6,7 +6,7 @@
 
 **Live Demo:** [FitZone Application](https://fitz-one8.netlify.app)  
 **GitHub Repository:** [mayurraj9378/fitness-app](https://github.com/mayurraj9378/fitness-app)  
-**Author:** [Mayur Raj Gude](https://www.linkedin.com/in/mayurrajgude/)
+**Author:** [Mayur Rajgude](https://www.linkedin.com/in/mayurrajgude/)
 
 ---
 
@@ -1464,13 +1464,13 @@ spring.datasource.hikari.maximum-pool-size=20
 
 ## License
 
-MIT License - Copyright (c) 2024 Mayur Raj Gude
+MIT License - Copyright (c) 2026 Mayur Rajgude
 
 ---
 
 ## Contact
 
-**Author:** Mayur Raj Gude  
+**Author:** Mayur Rajgude  
 **LinkedIn:** [linkedin.com/in/mayurrajgude](https://www.linkedin.com/in/mayurrajgude/)  
 **GitHub:** [github.com/mayurraj9378](https://github.com/mayurraj9378)
 
